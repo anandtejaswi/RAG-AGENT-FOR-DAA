@@ -1,0 +1,319 @@
+{
+  "id_format": "DIAG_DAA_U{unit}_{CONCEPT}_{NN}",
+  "count": 21,
+  "diagrams": [
+    {
+      "id": "DIAG_DAA_U1_RECUR_TREE_01",
+      "unit": 1,
+      "topic": "recurrences",
+      "concept": "recursion tree for T(n)=2T(n/2)+n",
+      "keywords": [
+        "recursion tree",
+        "recurrence tree",
+        "t(n)=2t(n/2)+n",
+        "merge sort recurrence"
+      ],
+      "file": "u1_recur_tree_01.png",
+      "caption": "Recursion tree expansion showing log n levels of cost n each, giving Theta(n log n)."
+    },
+    {
+      "id": "DIAG_DAA_U1_MASTER_CASES_01",
+      "unit": 1,
+      "topic": "recurrences",
+      "concept": "Master Theorem three cases flowchart",
+      "keywords": [
+        "master theorem",
+        "master method",
+        "three cases",
+        "case 1",
+        "case 2",
+        "case 3"
+      ],
+      "file": "u1_master_cases_01.png",
+      "caption": "Decision chart for the three cases of the Master Theorem and the bound each yields."
+    },
+    {
+      "id": "DIAG_DAA_U1_MERGE_SORT_01",
+      "unit": 1,
+      "topic": "sorting_comparison",
+      "concept": "merge sort divide and merge stages",
+      "keywords": [
+        "merge sort",
+        "divide and merge",
+        "merge step"
+      ],
+      "file": "u1_merge_sort_01.png",
+      "caption": "Merge sort splitting an array to singletons and merging back in sorted order."
+    },
+    {
+      "id": "DIAG_DAA_U2_AVL_ROT_01",
+      "unit": 2,
+      "topic": "red_black_trees",
+      "concept": "AVL LL single right rotation",
+      "keywords": [
+        "avl",
+        "ll rotation",
+        "single rotation",
+        "right rotation",
+        "balance factor"
+      ],
+      "file": "u2_avl_rot_01.png",
+      "caption": "An LL imbalance and the single right rotation that restores the AVL property."
+    },
+    {
+      "id": "DIAG_DAA_U2_AVL_ROT_02",
+      "unit": 2,
+      "topic": "red_black_trees",
+      "concept": "AVL LR double rotation",
+      "keywords": [
+        "avl",
+        "lr rotation",
+        "double rotation",
+        "left right rotation"
+      ],
+      "file": "u2_avl_rot_02.png",
+      "caption": "An LR imbalance repaired by a left rotation followed by a right rotation."
+    },
+    {
+      "id": "DIAG_DAA_U2_RB_INSERT_01",
+      "unit": 2,
+      "topic": "red_black_trees",
+      "concept": "red-black tree insertion rebalancing",
+      "keywords": [
+        "red-black",
+        "red black tree",
+        "recolour",
+        "recoloring",
+        "rebalancing",
+        "fix-up"
+      ],
+      "file": "u2_rb_insert_01.png",
+      "caption": "Red-Black insertion fix-up when the uncle is red: recolour instead of rotating."
+    },
+    {
+      "id": "DIAG_DAA_U2_BTREE_SPLIT_01",
+      "unit": 2,
+      "topic": "b_trees",
+      "concept": "B-tree node split on the median key",
+      "keywords": [
+        "b-tree",
+        "split child",
+        "node split",
+        "median key",
+        "minimum degree"
+      ],
+      "file": "u2_btree_split_01.png",
+      "caption": "Splitting a full B-tree node: the median key moves up into the parent."
+    },
+    {
+      "id": "DIAG_DAA_U2_BINOMIAL_HEAP_01",
+      "unit": 2,
+      "topic": "binomial_fibonacci_heaps",
+      "concept": "binomial trees B0 B1 B2 structure",
+      "keywords": [
+        "binomial heap",
+        "binomial tree",
+        "b0",
+        "b1",
+        "b2",
+        "mergeable heap"
+      ],
+      "file": "u2_binomial_heap_01.png",
+      "caption": "Binomial trees of order 0, 1 and 2, the building blocks of a binomial heap."
+    },
+    {
+      "id": "DIAG_DAA_U3_BFS_DFS_01",
+      "unit": 3,
+      "topic": "graph_traversal",
+      "concept": "BFS and DFS visit order",
+      "keywords": [
+        "bfs",
+        "dfs",
+        "breadth-first",
+        "depth-first",
+        "traversal order"
+      ],
+      "file": "u3_bfs_dfs_01.png",
+      "caption": "Breadth-first and depth-first visit orders on the same graph."
+    },
+    {
+      "id": "DIAG_DAA_U3_MST_KRUSKAL_01",
+      "unit": 3,
+      "topic": "mst",
+      "concept": "Kruskal MST construction stages",
+      "keywords": [
+        "kruskal",
+        "minimum spanning tree",
+        "mst stages",
+        "lightest edge",
+        "disjoint set"
+      ],
+      "file": "u3_mst_kruskal_01.png",
+      "caption": "Successive stages of Kruskal's algorithm adding the lightest acyclic edges."
+    },
+    {
+      "id": "DIAG_DAA_U3_MST_PRIM_01",
+      "unit": 3,
+      "topic": "mst",
+      "concept": "Prim MST growth stages",
+      "keywords": [
+        "prim",
+        "minimum spanning tree",
+        "grow tree",
+        "cheapest edge",
+        "cut"
+      ],
+      "file": "u3_mst_prim_01.png",
+      "caption": "Prim's algorithm growing a single tree from vertex A, one cheapest edge at a time."
+    },
+    {
+      "id": "DIAG_DAA_U3_DIJKSTRA_01",
+      "unit": 3,
+      "topic": "dijkstra",
+      "concept": "Dijkstra distance array trace",
+      "keywords": [
+        "dijkstra",
+        "shortest path tree",
+        "distance array",
+        "trace",
+        "extract-min"
+      ],
+      "file": "u3_dijkstra_01.png",
+      "caption": "Dijkstra's shortest path tree from A with the distance array after each extraction."
+    },
+    {
+      "id": "DIAG_DAA_U3_BELLMAN_01",
+      "unit": 3,
+      "topic": "bellman_ford",
+      "concept": "Bellman-Ford pass by pass distances",
+      "keywords": [
+        "bellman-ford",
+        "bellman ford",
+        "negative weight",
+        "passes",
+        "negative cycle"
+      ],
+      "file": "u3_bellman_01.png",
+      "caption": "Distance estimates after each Bellman-Ford pass on a graph with negative edges."
+    },
+    {
+      "id": "DIAG_DAA_U3_HUFFMAN_01",
+      "unit": 3,
+      "topic": "huffman_coding",
+      "concept": "Huffman coding tree with codewords",
+      "keywords": [
+        "huffman",
+        "prefix code",
+        "codeword",
+        "frequency",
+        "encoding tree"
+      ],
+      "file": "u3_huffman_01.png",
+      "caption": "Huffman tree built by merging lowest frequencies, with the resulting prefix codes."
+    },
+    {
+      "id": "DIAG_DAA_U4_KNAPSACK_TABLE_01",
+      "unit": 4,
+      "topic": "knapsack_01",
+      "concept": "0/1 knapsack dynamic programming table",
+      "keywords": [
+        "0/1 knapsack",
+        "knapsack table",
+        "dp table",
+        "knapsack matrix"
+      ],
+      "file": "u4_knapsack_table_01.png",
+      "caption": "Completed 0/1 knapsack DP table with the optimal cell highlighted."
+    },
+    {
+      "id": "DIAG_DAA_U4_LCS_TABLE_01",
+      "unit": 4,
+      "topic": "lcs",
+      "concept": "LCS length table with direction arrows",
+      "keywords": [
+        "lcs",
+        "longest common subsequence",
+        "direction arrow",
+        "lcs table",
+        "traceback"
+      ],
+      "file": "u4_lcs_table_01.png",
+      "caption": "LCS table with direction arrows; the highlighted cells are the traceback path."
+    },
+    {
+      "id": "DIAG_DAA_U4_FLOYD_MATRIX_01",
+      "unit": 4,
+      "topic": "floyd_warshall",
+      "concept": "Floyd-Warshall distance matrices",
+      "keywords": [
+        "floyd",
+        "warshall",
+        "distance matrix",
+        "all pair shortest path",
+        "d matrix"
+      ],
+      "file": "u4_floyd_matrix_01.png",
+      "caption": "Distance matrices D(0), D(1), D(2) and D(4) of the Floyd-Warshall algorithm."
+    },
+    {
+      "id": "DIAG_DAA_U4_MCM_TABLE_01",
+      "unit": 4,
+      "topic": "matrix_chain",
+      "concept": "matrix chain multiplication cost table",
+      "keywords": [
+        "matrix chain",
+        "m table",
+        "parenthesization",
+        "parenthesisation",
+        "scalar multiplication"
+      ],
+      "file": "u4_mcm_table_01.png",
+      "caption": "Matrix chain m table with the minimum multiplication cost and parenthesisation."
+    },
+    {
+      "id": "DIAG_DAA_U4_NQUEEN_TREE_01",
+      "unit": 4,
+      "topic": "backtracking",
+      "concept": "4-queens state space tree",
+      "keywords": [
+        "n-queen",
+        "n queens",
+        "state space tree",
+        "backtracking",
+        "pruning",
+        "bounding function"
+      ],
+      "file": "u4_nqueen_tree_01.png",
+      "caption": "State space tree for 4-Queens showing pruned branches and one solution."
+    },
+    {
+      "id": "DIAG_DAA_U5_KMP_PREFIX_01",
+      "unit": 5,
+      "topic": "string_matching",
+      "concept": "KMP prefix function table",
+      "keywords": [
+        "kmp",
+        "prefix function",
+        "failure function",
+        "knuth-morris-pratt"
+      ],
+      "file": "u5_kmp_prefix_01.png",
+      "caption": "Prefix function table used by KMP to shift the pattern without re-comparing."
+    },
+    {
+      "id": "DIAG_DAA_U5_NP_CLASSES_01",
+      "unit": 5,
+      "topic": "np_completeness",
+      "concept": "P NP NP-complete NP-hard relationship",
+      "keywords": [
+        "np-complete",
+        "np-hard",
+        "class p",
+        "class np",
+        "complexity classes"
+      ],
+      "file": "u5_np_classes_01.png",
+      "caption": "Euler diagram of P, NP, NP-complete and NP-hard under the assumption P != NP."
+    }
+  ]
+}
