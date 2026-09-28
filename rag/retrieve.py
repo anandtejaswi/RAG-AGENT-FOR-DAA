@@ -27,6 +27,7 @@ RRF_K = 60
 TOPIC_FILTER_CONFIDENCE = 0.7
 TOPIC_BOOST = 1.5
 MIN_TOPIC_CHUNKS = 3
+MIN_CONTEXT_CHUNKS = 3
 
 # Tuned on the out-of-scope queries of data/testset.json.
 # ponytail: single global threshold; per-topic thresholds only if recall suffers.
@@ -300,7 +301,17 @@ def search(query: str, classification: dict, top_k: int = TOP_K) -> tuple[list[S
         # two chunks, and the unit fallback could not separate colliding topics.
         matching = sum(1 for p in fused if tier(p) == 0)
         mode = f"priority:topic({matching} on-topic)"
-        ranked = sorted(fused.items(), key=lambda kv: (tier(kv[0]), -kv[1]))[:top_k]
+        ordered = sorted(fused.items(), key=lambda kv: (tier(kv[0]), -kv[1]))
+        # Adaptive context size. Padding a thin topic out to top_k drags
+        # unrelated passages into the context, which the brief scores against.
+        # Take the on-topic chunks, then top up only as far as the minimum the
+        # generator needs to have enough to work with.
+        on_topic = [kv for kv in ordered if tier(kv[0]) == 0][:top_k]
+        if len(on_topic) >= MIN_CONTEXT_CHUNKS:
+            ranked = on_topic
+        else:
+            rest = [kv for kv in ordered if tier(kv[0]) != 0]
+            ranked = (on_topic + rest)[:max(MIN_CONTEXT_CHUNKS, len(on_topic))]
     else:
         if topic:
             for p in [p for p in fused if tier(p) == 0]:

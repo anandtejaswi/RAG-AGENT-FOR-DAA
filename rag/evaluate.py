@@ -122,6 +122,9 @@ def score_query(case: dict, record: dict) -> dict:
     chunks = record["chunks"]
     topics = [c["topic"] for c in chunks]
     expected_topic = case["expected_topic"]
+    # A comparison question ("differentiate backtracking and branch and bound")
+    # is pertinent to more than one topic, so relevance is scored against a set.
+    acceptable = set(case.get("acceptable_topics") or ([expected_topic] if expected_topic else []))
     answer = record["answer"]
     m: dict[str, float | None] = {}
 
@@ -131,10 +134,10 @@ def score_query(case: dict, record: dict) -> dict:
         m["context_precision"] = None
     else:
         m["context_relevance"] = (
-            round(sum(1 for t in topics if t == expected_topic) / len(topics), 3)
+            round(sum(1 for t in topics if t in acceptable) / len(topics), 3)
             if topics else 0.0
         )
-        m["context_precision"] = 1.0 if expected_topic in topics[:2] else 0.0
+        m["context_precision"] = 1.0 if any(t in acceptable for t in topics[:2]) else 0.0
 
     # --- Specialised domain metrics --------------------------------------
     classified = record["classification"].get("topic")

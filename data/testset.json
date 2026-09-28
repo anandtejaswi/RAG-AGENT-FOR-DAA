@@ -1,296 +1,589 @@
 {
   "description": "Labelled evaluation set for the AKTU DAA RAG system. Queries marked with a source of 'PYQ <year>' are taken from the supplied AKTU previous year question papers.",
   "collision_pairs": [
-    {"term": "relaxation", "queries": ["Q11", "Q12"]},
-    {"term": "knapsack", "queries": ["Q13", "Q14"]},
-    {"term": "dynamic programming", "queries": ["Q15", "Q16"]},
-    {"term": "greedy", "queries": ["Q17", "Q18"]}
+    {
+      "term": "relaxation",
+      "queries": [
+        "Q11",
+        "Q12"
+      ]
+    },
+    {
+      "term": "knapsack",
+      "queries": [
+        "Q13",
+        "Q14"
+      ]
+    },
+    {
+      "term": "dynamic programming",
+      "queries": [
+        "Q15",
+        "Q16"
+      ]
+    },
+    {
+      "term": "greedy",
+      "queries": [
+        "Q17",
+        "Q18"
+      ]
+    }
   ],
   "queries": [
     {
-      "id": "Q01", "category": "numeric", "source": "authored",
+      "id": "Q01",
+      "category": "numeric",
+      "source": "authored",
       "query": "Solve the recurrence T(n) = 2T(n/2) + n using the Master Theorem. State which case applies and give the exact asymptotic bound.",
-      "expected_unit": 1, "expected_topic": "recurrences",
+      "expected_unit": 1,
+      "expected_topic": "recurrences",
       "expected_numeric_task": "master_theorem",
-      "expected_numeric": {"case": 2, "bound": "Theta(n log n)"},
+      "expected_numeric": {
+        "case": 2,
+        "bound": "Theta(n log n)"
+      },
       "expected_diagram_ids": [],
-      "must_mention": ["Case 2", "n log n"]
+      "must_mention": [
+        "Case 2",
+        "n log n"
+      ]
     },
     {
-      "id": "Q02", "category": "numeric", "source": "authored",
+      "id": "Q02",
+      "category": "numeric",
+      "source": "authored",
       "query": "Apply the Master Theorem to T(n) = 9T(n/3) + n. Which case is it and what is the bound?",
-      "expected_unit": 1, "expected_topic": "recurrences",
+      "expected_unit": 1,
+      "expected_topic": "recurrences",
       "expected_numeric_task": "master_theorem",
-      "expected_numeric": {"case": 1, "bound": "Theta(n^2)"},
+      "expected_numeric": {
+        "case": 1,
+        "bound": "Theta(n^2)"
+      },
       "expected_diagram_ids": [],
-      "must_mention": ["Case 1", "n^2"]
+      "must_mention": [
+        "Case 1",
+        "n^2"
+      ]
     },
     {
-      "id": "Q03", "category": "numeric", "source": "authored",
+      "id": "Q03",
+      "category": "numeric",
+      "source": "authored",
       "query": "Solve the 0/1 knapsack problem for weights [1, 3, 4, 5], values [1, 4, 5, 7] and capacity 7. Show the complete dynamic programming table and the items selected.",
-      "expected_unit": 4, "expected_topic": "knapsack_01",
+      "expected_unit": 4,
+      "expected_topic": "knapsack_01",
       "expected_numeric_task": "knapsack_01",
-      "expected_numeric": {"optimal_value": 9, "chosen_items": [2, 3]},
+      "expected_numeric": {
+        "optimal_value": 9,
+        "chosen_items": [
+          2,
+          3
+        ]
+      },
       "expected_diagram_ids": [],
-      "must_mention": ["9"]
+      "must_mention": [
+        "9"
+      ]
     },
     {
-      "id": "Q04", "category": "numeric", "source": "PYQ 2022-23 SECTION B 2(d)",
+      "id": "Q04",
+      "category": "numeric",
+      "source": "PYQ 2022-23 SECTION B 2(d)",
       "query": "Compute the Longest Common Subsequence of ABCBDAB and BDCABA using dynamic programming. Give the length table and the resulting subsequence.",
-      "expected_unit": 4, "expected_topic": "lcs",
+      "expected_unit": 4,
+      "expected_topic": "lcs",
       "expected_numeric_task": "lcs",
-      "expected_numeric": {"length": 4},
+      "expected_numeric": {
+        "length": 4
+      },
       "expected_diagram_ids": [],
-      "must_mention": ["4"]
+      "must_mention": [
+        "4"
+      ]
     },
     {
-      "id": "Q05", "category": "numeric", "source": "authored",
+      "id": "Q05",
+      "category": "numeric",
+      "source": "authored",
       "query": "Find the optimal parenthesization for a matrix chain with dimensions p = [30, 35, 15, 5, 10, 20, 25] and give the minimum number of scalar multiplications.",
-      "expected_unit": 4, "expected_topic": "matrix_chain",
+      "expected_unit": 4,
+      "expected_topic": "matrix_chain",
       "expected_numeric_task": "matrix_chain",
-      "expected_numeric": {"min_cost": 15125},
+      "expected_numeric": {
+        "min_cost": 15125
+      },
       "expected_diagram_ids": [],
-      "must_mention": ["15125"]
+      "must_mention": [
+        "15125"
+      ]
     },
     {
-      "id": "Q06", "category": "numeric", "source": "PYQ 2024-25 SECTION B 2(d)",
+      "id": "Q06",
+      "category": "numeric",
+      "source": "PYQ 2024-25 SECTION B 2(d)",
       "query": "Apply Floyd-Warshall to the weight matrix [[0,3,null,7],[8,0,2,null],[5,null,0,1],[2,null,null,0]] and give the final all pairs shortest path matrix.",
-      "expected_unit": 4, "expected_topic": "floyd_warshall",
+      "expected_unit": 4,
+      "expected_topic": "floyd_warshall",
       "expected_numeric_task": "floyd_warshall",
-      "expected_numeric": {"final": [[0, 3, 5, 6], [5, 0, 2, 3], [3, 6, 0, 1], [2, 5, 7, 0]]},
+      "expected_numeric": {
+        "final": [
+          [
+            0,
+            3,
+            5,
+            6
+          ],
+          [
+            5,
+            0,
+            2,
+            3
+          ],
+          [
+            3,
+            6,
+            0,
+            1
+          ],
+          [
+            2,
+            5,
+            7,
+            0
+          ]
+        ]
+      },
       "expected_diagram_ids": [],
-      "must_mention": ["Theta(V^3)"]
+      "must_mention": [
+        "Theta(V^3)"
+      ]
     },
     {
-      "id": "Q07", "category": "numeric", "source": "PYQ 2024-25 SECTION B 2(c)",
+      "id": "Q07",
+      "category": "numeric",
+      "source": "PYQ 2024-25 SECTION B 2(c)",
       "query": "Trace Dijkstra's algorithm from source A on the graph {\"A\": {\"B\": 4, \"C\": 2}, \"B\": {\"C\": 5, \"D\": 10}, \"C\": {\"E\": 3}, \"D\": {\"F\": 11}, \"E\": {\"D\": 4}, \"F\": {}} and give the final shortest distances.",
-      "expected_unit": 3, "expected_topic": "dijkstra",
+      "expected_unit": 3,
+      "expected_topic": "dijkstra",
       "expected_numeric_task": "dijkstra",
-      "expected_numeric": {"distances": {"A": 0, "B": 4, "C": 2, "D": 9, "E": 5, "F": 20}},
+      "expected_numeric": {
+        "distances": {
+          "A": 0,
+          "B": 4,
+          "C": 2,
+          "D": 9,
+          "E": 5,
+          "F": 20
+        }
+      },
       "expected_diagram_ids": [],
-      "must_mention": ["20"]
+      "must_mention": [
+        "20"
+      ]
     },
     {
-      "id": "Q08", "category": "numeric", "source": "authored",
+      "id": "Q08",
+      "category": "numeric",
+      "source": "authored",
       "query": "Solve the fractional knapsack instance with weights [10, 20, 30], values [60, 100, 120] and capacity 50 using the greedy method. Show the value to weight ratios and the total profit.",
-      "expected_unit": 3, "expected_topic": "fractional_knapsack",
+      "expected_unit": 3,
+      "expected_topic": "fractional_knapsack",
       "expected_numeric_task": "fractional_knapsack",
-      "expected_numeric": {"optimal_value": 240.0},
+      "expected_numeric": {
+        "optimal_value": 240.0
+      },
       "expected_diagram_ids": [],
-      "must_mention": ["240"]
+      "must_mention": [
+        "240"
+      ]
     },
     {
-      "id": "Q09", "category": "diagram", "source": "authored",
+      "id": "Q09",
+      "category": "diagram",
+      "source": "authored",
       "query": "Draw the recursion tree for T(n) = 2T(n/2) + n and explain why the total cost is n log n.",
-      "expected_unit": 1, "expected_topic": "recurrences",
-      "expected_numeric_task": null, "expected_numeric": null,
-      "expected_diagram_ids": ["DIAG_DAA_U1_RECUR_TREE_01"],
-      "must_mention": ["level"]
+      "expected_unit": 1,
+      "expected_topic": "recurrences",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
+      "expected_diagram_ids": [
+        "DIAG_DAA_U1_RECUR_TREE_01"
+      ],
+      "must_mention": [
+        "level"
+      ]
     },
     {
-      "id": "Q10", "category": "diagram", "source": "authored",
+      "id": "Q10",
+      "category": "diagram",
+      "source": "authored",
       "query": "Show the rotation that repairs an LL imbalance in an AVL tree and state the balance factor before and after.",
-      "expected_unit": 2, "expected_topic": "red_black_trees",
-      "expected_numeric_task": null, "expected_numeric": null,
-      "expected_diagram_ids": ["DIAG_DAA_U2_AVL_ROT_01"],
-      "must_mention": ["rotation"]
+      "expected_unit": 2,
+      "expected_topic": "red_black_trees",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
+      "expected_diagram_ids": [
+        "DIAG_DAA_U2_AVL_ROT_01"
+      ],
+      "must_mention": [
+        "rotation"
+      ]
     },
     {
-      "id": "Q11", "category": "disambiguation", "source": "authored",
+      "id": "Q11",
+      "category": "disambiguation",
+      "source": "authored",
       "query": "Explain how edge relaxation works in Dijkstra's algorithm and why it requires non-negative edge weights.",
-      "expected_unit": 3, "expected_topic": "dijkstra",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 3,
+      "expected_topic": "dijkstra",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["non-negative", "priority queue"],
-      "must_not_mention": ["V-1 passes"],
+      "must_mention": [
+        "non-negative",
+        "priority queue"
+      ],
+      "must_not_mention": [
+        "V-1 passes"
+      ],
       "collision_term": "relaxation"
     },
     {
-      "id": "Q12", "category": "disambiguation", "source": "authored",
+      "id": "Q12",
+      "category": "disambiguation",
+      "source": "authored",
       "query": "Explain edge relaxation in the Bellman-Ford algorithm and why V-1 passes over all edges are needed.",
-      "expected_unit": 3, "expected_topic": "bellman_ford",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 3,
+      "expected_topic": "bellman_ford",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["negative"],
+      "must_mention": [
+        "negative"
+      ],
       "collision_term": "relaxation"
     },
     {
-      "id": "Q13", "category": "disambiguation", "source": "authored",
+      "id": "Q13",
+      "category": "disambiguation",
+      "source": "authored",
       "query": "How is the knapsack problem solved by the greedy method when an item may be broken into fractions?",
-      "expected_unit": 3, "expected_topic": "fractional_knapsack",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 3,
+      "expected_topic": "fractional_knapsack",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["ratio"],
+      "must_mention": [
+        "ratio"
+      ],
       "collision_term": "knapsack"
     },
     {
-      "id": "Q14", "category": "disambiguation", "source": "authored",
+      "id": "Q14",
+      "category": "disambiguation",
+      "source": "authored",
       "query": "How is the knapsack problem solved when items cannot be broken and each item is either taken whole or left?",
-      "expected_unit": 4, "expected_topic": "knapsack_01",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 4,
+      "expected_topic": "knapsack_01",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["dynamic programming"],
+      "must_mention": [
+        "dynamic programming"
+      ],
       "collision_term": "knapsack"
     },
     {
-      "id": "Q15", "category": "disambiguation", "source": "authored",
+      "id": "Q15",
+      "category": "disambiguation",
+      "source": "authored",
       "query": "Which dynamic programming algorithm finds the best order to multiply a chain of matrices, and what does its table store?",
-      "expected_unit": 4, "expected_topic": "matrix_chain",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 4,
+      "expected_topic": "matrix_chain",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["scalar multiplication"],
+      "must_mention": [
+        "scalar multiplication"
+      ],
       "collision_term": "dynamic programming"
     },
     {
-      "id": "Q16", "category": "disambiguation", "source": "authored",
+      "id": "Q16",
+      "category": "disambiguation",
+      "source": "authored",
       "query": "Which dynamic programming algorithm computes shortest paths between every pair of vertices, and what does its table store?",
-      "expected_unit": 4, "expected_topic": "floyd_warshall",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 4,
+      "expected_topic": "floyd_warshall",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["all pair"],
+      "must_mention": [
+        "all pair"
+      ],
       "collision_term": "dynamic programming"
     },
     {
-      "id": "Q17", "category": "disambiguation", "source": "PYQ 2022-23 SECTION B 2(c)",
+      "id": "Q17",
+      "category": "disambiguation",
+      "source": "PYQ 2022-23 SECTION B 2(c)",
       "query": "Which greedy algorithm builds a minimum spanning tree by repeatedly adding the lightest edge that creates no cycle?",
-      "expected_unit": 3, "expected_topic": "mst",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 3,
+      "expected_topic": "mst",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["Kruskal"],
+      "must_mention": [
+        "Kruskal"
+      ],
       "collision_term": "greedy"
     },
     {
-      "id": "Q18", "category": "disambiguation", "source": "authored",
+      "id": "Q18",
+      "category": "disambiguation",
+      "source": "authored",
       "query": "Which greedy algorithm builds an optimal prefix code by repeatedly merging the two lowest frequency symbols?",
-      "expected_unit": 3, "expected_topic": "huffman_coding",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 3,
+      "expected_topic": "huffman_coding",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["Huffman"],
+      "must_mention": [
+        "Huffman"
+      ],
       "collision_term": "greedy"
     },
     {
-      "id": "Q19", "category": "general", "source": "PYQ 2022-23 SECTION A 1(b)",
+      "id": "Q19",
+      "category": "general",
+      "source": "PYQ 2022-23 SECTION A 1(b)",
       "query": "Explain and compare the best case and worst case time complexity of Quick Sort.",
-      "expected_unit": 1, "expected_topic": "sorting_comparison",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 1,
+      "expected_topic": "sorting_comparison",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["n log n", "n^2"]
+      "must_mention": [
+        "n log n",
+        "n^2"
+      ]
     },
     {
-      "id": "Q20", "category": "general", "source": "PYQ 2022-23 SECTION A 1(c)",
+      "id": "Q20",
+      "category": "general",
+      "source": "PYQ 2022-23 SECTION A 1(c)",
       "query": "Discuss the skip list and its operations.",
-      "expected_unit": 2, "expected_topic": "tries_skip_lists",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 2,
+      "expected_topic": "tries_skip_lists",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["log n"]
+      "must_mention": [
+        "log n"
+      ]
     },
     {
-      "id": "Q21", "category": "general", "source": "PYQ 2022-23 SECTION B 2(b)",
+      "id": "Q21",
+      "category": "general",
+      "source": "PYQ 2022-23 SECTION B 2(b)",
       "query": "What are the differences between a Binomial Heap and a Fibonacci Heap?",
-      "expected_unit": 2, "expected_topic": "binomial_fibonacci_heaps",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 2,
+      "expected_topic": "binomial_fibonacci_heaps",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["amortized"]
+      "must_mention": [
+        "amortized"
+      ],
+      "acceptable_topics": [
+        "binomial_fibonacci_heaps"
+      ]
     },
     {
-      "id": "Q22", "category": "general", "source": "PYQ 2022-23 SECTION A 1(i)",
+      "id": "Q22",
+      "category": "general",
+      "source": "PYQ 2022-23 SECTION A 1(i)",
       "query": "Define NP, NP-hard and NP-complete, and give an example of each.",
-      "expected_unit": 5, "expected_topic": "np_completeness",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 5,
+      "expected_topic": "np_completeness",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["polynomial"]
+      "must_mention": [
+        "polynomial"
+      ]
     },
     {
-      "id": "Q23", "category": "general", "source": "PYQ 2022-23 SECTION A 1(g)",
+      "id": "Q23",
+      "category": "general",
+      "source": "PYQ 2022-23 SECTION A 1(g)",
       "query": "Differentiate between Backtracking and Branch and Bound techniques.",
-      "expected_unit": 4, "expected_topic": "branch_and_bound",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 4,
+      "expected_topic": "branch_and_bound",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["bound"]
+      "must_mention": [
+        "bound"
+      ],
+      "acceptable_topics": [
+        "branch_and_bound",
+        "backtracking"
+      ]
     },
     {
-      "id": "Q24", "category": "general", "source": "PYQ 2024-25 SECTION A 1(c)",
+      "id": "Q24",
+      "category": "general",
+      "source": "PYQ 2024-25 SECTION A 1(c)",
       "query": "Derive the time complexity of Heap Sort.",
-      "expected_unit": 1, "expected_topic": "sorting_comparison",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 1,
+      "expected_topic": "sorting_comparison",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["n log n"]
+      "must_mention": [
+        "n log n"
+      ]
     },
     {
-      "id": "Q25", "category": "general", "source": "PYQ 2024-25 SECTION A 1(g)",
+      "id": "Q25",
+      "category": "general",
+      "source": "PYQ 2024-25 SECTION A 1(g)",
       "query": "Describe randomized algorithms and list a few examples.",
-      "expected_unit": 5, "expected_topic": "randomized_algorithms",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 5,
+      "expected_topic": "randomized_algorithms",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["random"]
+      "must_mention": [
+        "random"
+      ]
     },
     {
-      "id": "Q26", "category": "general", "source": "authored",
+      "id": "Q26",
+      "category": "general",
+      "source": "authored",
       "query": "State the properties that every Red-Black tree must satisfy.",
-      "expected_unit": 2, "expected_topic": "red_black_trees",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 2,
+      "expected_topic": "red_black_trees",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["black"]
+      "must_mention": [
+        "black"
+      ]
     },
     {
-      "id": "Q27", "category": "general", "source": "PYQ 2022-23 SECTION B 2(e)",
+      "id": "Q27",
+      "category": "general",
+      "source": "PYQ 2022-23 SECTION B 2(e)",
       "query": "Explain the Rabin-Karp string matching algorithm and what a spurious hit is.",
-      "expected_unit": 5, "expected_topic": "string_matching",
-      "expected_numeric_task": null, "expected_numeric": null,
+      "expected_unit": 5,
+      "expected_topic": "string_matching",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
       "expected_diagram_ids": [],
-      "must_mention": ["hash"]
+      "must_mention": [
+        "hash"
+      ]
     },
     {
-      "id": "Q28", "category": "diagram", "source": "PYQ 2022-23 SECTION B 2(c)",
+      "id": "Q28",
+      "category": "diagram",
+      "source": "PYQ 2022-23 SECTION B 2(c)",
       "query": "Illustrate the stages of Kruskal's algorithm on a weighted graph, showing which edge is added at each step.",
-      "expected_unit": 3, "expected_topic": "mst",
-      "expected_numeric_task": null, "expected_numeric": null,
-      "expected_diagram_ids": ["DIAG_DAA_U3_MST_KRUSKAL_01"],
-      "must_mention": ["cycle"]
+      "expected_unit": 3,
+      "expected_topic": "mst",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
+      "expected_diagram_ids": [
+        "DIAG_DAA_U3_MST_KRUSKAL_01"
+      ],
+      "must_mention": [
+        "cycle"
+      ]
     },
     {
-      "id": "Q29", "category": "diagram", "source": "PYQ 2022-23 SECTION A 1(h)",
+      "id": "Q29",
+      "category": "diagram",
+      "source": "PYQ 2022-23 SECTION A 1(h)",
       "query": "Draw the state space tree explored by backtracking for the 4-Queens problem and explain the bounding function.",
-      "expected_unit": 4, "expected_topic": "backtracking",
-      "expected_numeric_task": null, "expected_numeric": null,
-      "expected_diagram_ids": ["DIAG_DAA_U4_NQUEEN_TREE_01"],
-      "must_mention": ["prun"]
+      "expected_unit": 4,
+      "expected_topic": "backtracking",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
+      "expected_diagram_ids": [
+        "DIAG_DAA_U4_NQUEEN_TREE_01"
+      ],
+      "must_mention": [
+        "prun"
+      ]
     },
     {
-      "id": "Q30", "category": "diagram", "source": "authored",
+      "id": "Q30",
+      "category": "diagram",
+      "source": "authored",
       "query": "Show the LCS table with direction arrows for two strings and explain how the arrows recover the subsequence.",
-      "expected_unit": 4, "expected_topic": "lcs",
-      "expected_numeric_task": null, "expected_numeric": null,
-      "expected_diagram_ids": ["DIAG_DAA_U4_LCS_TABLE_01"],
-      "must_mention": ["diagonal"]
+      "expected_unit": 4,
+      "expected_topic": "lcs",
+      "expected_numeric_task": null,
+      "expected_numeric": null,
+      "expected_diagram_ids": [
+        "DIAG_DAA_U4_LCS_TABLE_01"
+      ],
+      "must_mention": [
+        "diagonal"
+      ]
     },
     {
-      "id": "Q31", "category": "oos", "source": "authored",
+      "id": "Q31",
+      "category": "oos",
+      "source": "authored",
       "query": "How do I bake sourdough bread at home?",
-      "expected_unit": null, "expected_topic": null,
-      "expected_numeric_task": null, "expected_numeric": null,
-      "expected_diagram_ids": [], "must_mention": []
+      "expected_unit": null,
+      "expected_topic": null,
+      "expected_numeric_task": null,
+      "expected_numeric": null,
+      "expected_diagram_ids": [],
+      "must_mention": []
     },
     {
-      "id": "Q32", "category": "oos", "source": "authored",
+      "id": "Q32",
+      "category": "oos",
+      "source": "authored",
       "query": "Explain the self-attention mechanism used in transformer neural networks.",
-      "expected_unit": null, "expected_topic": null,
-      "expected_numeric_task": null, "expected_numeric": null,
-      "expected_diagram_ids": [], "must_mention": []
+      "expected_unit": null,
+      "expected_topic": null,
+      "expected_numeric_task": null,
+      "expected_numeric": null,
+      "expected_diagram_ids": [],
+      "must_mention": []
     },
     {
-      "id": "Q33", "category": "oos", "source": "authored",
+      "id": "Q33",
+      "category": "oos",
+      "source": "authored",
       "query": "Who is the current Vice Chancellor of AKTU and what is the exam fee for the fifth semester?",
-      "expected_unit": null, "expected_topic": null,
-      "expected_numeric_task": null, "expected_numeric": null,
-      "expected_diagram_ids": [], "must_mention": []
+      "expected_unit": null,
+      "expected_topic": null,
+      "expected_numeric_task": null,
+      "expected_numeric": null,
+      "expected_diagram_ids": [],
+      "must_mention": []
     },
     {
-      "id": "Q34", "category": "oos", "source": "authored",
+      "id": "Q34",
+      "category": "oos",
+      "source": "authored",
       "query": "Describe the CAP theorem and how distributed databases handle partition tolerance.",
-      "expected_unit": null, "expected_topic": null,
-      "expected_numeric_task": null, "expected_numeric": null,
-      "expected_diagram_ids": [], "must_mention": []
+      "expected_unit": null,
+      "expected_topic": null,
+      "expected_numeric_task": null,
+      "expected_numeric": null,
+      "expected_diagram_ids": [],
+      "must_mention": []
     }
   ]
 }

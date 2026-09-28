@@ -400,6 +400,28 @@ def floyd_warshall(matrix: list[list[float]]) -> dict:
 # Graph algorithms
 # --------------------------------------------------------------------------
 
+def _normalise_graph(graph: dict) -> dict:
+    """Accept a graph whose sink vertices have no adjacency entry of their own.
+
+    Callers (including a language model) routinely write {"A": {"B": 4}} and omit
+    "B". Treating every referenced vertex as a vertex avoids a KeyError on input
+    that is unambiguous.
+    """
+    if not isinstance(graph, dict) or not graph:
+        raise ValueError("graph must be a non-empty adjacency mapping")
+    out = {}
+    for u, edges in graph.items():
+        if edges is None:
+            edges = {}
+        if not isinstance(edges, dict):
+            raise ValueError(f"adjacency of {u!r} must be a mapping of vertex to weight")
+        out.setdefault(str(u), {})
+        for v, w in edges.items():
+            out[str(u)][str(v)] = float(w)
+            out.setdefault(str(v), {})
+    return out
+
+
 def dijkstra(graph: dict, source: str) -> dict:
     """Trace Dijkstra's single source shortest path algorithm.
 
@@ -411,6 +433,8 @@ def dijkstra(graph: dict, source: str) -> dict:
         A per-iteration trace of extracted vertices and relaxations, plus the
         final distances and predecessor tree.
     """
+    graph = _normalise_graph(graph)
+    source = str(source)
     if source not in graph:
         raise ValueError(f"source {source!r} is not a vertex of the graph")
     if any(w < 0 for u in graph for w in graph[u].values()):
@@ -471,6 +495,8 @@ def bellman_ford(graph: dict, source: str) -> dict:
     Returns:
         Distances after each of the V-1 passes and the negative cycle verdict.
     """
+    graph = _normalise_graph(graph)
+    source = str(source)
     if source not in graph:
         raise ValueError(f"source {source!r} is not a vertex of the graph")
     vertices = list(graph)
