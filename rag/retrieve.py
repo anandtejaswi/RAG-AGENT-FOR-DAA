@@ -90,9 +90,11 @@ def embed_query(query: str) -> np.ndarray:
 # Query classification
 # --------------------------------------------------------------------------
 
+# Order matters: the first matching hint wins, so the more specific phrasing
+# ("recursion tree") is checked before the generic recurrence forms.
 NUMERIC_HINTS = {
+    "recursion_tree": ["recursion tree", "recurrence tree"],
     "master_theorem": ["master theorem", "master method", "solve the recurrence", "t(n) ="],
-    "recursion_tree": ["recursion tree"],
     "knapsack_01": ["0/1 knapsack", "01 knapsack"],
     "fractional_knapsack": ["fractional knapsack"],
     "lcs": ["longest common subsequence", "lcs"],
@@ -101,6 +103,11 @@ NUMERIC_HINTS = {
     "dijkstra": ["dijkstra"],
     "bellman_ford": ["bellman-ford", "bellman ford"],
 }
+
+COMPUTE_INTENT = [
+    "solve", "compute", "calculate", "apply", "trace", "fill", "find the",
+    "draw the recursion tree", "step by step", "step-by-step", "using the master",
+]
 
 DIAGRAM_HINTS = [
     "diagram", "draw", "figure", "illustrate", "show the tree", "show the table",
@@ -209,8 +216,11 @@ def classify(query: str, use_llm: bool = True) -> dict:
     """Route a query to a syllabus topic, combining the model and the keyword map."""
     lex = lexical_classify(query)
     q = query.lower()
+    # Naming an algorithm is not a request to compute with it. A solver is only
+    # suggested when the query also asks for a computation or supplies data.
+    wants_compute = any(k in q for k in COMPUTE_INTENT) or any(ch.isdigit() for ch in q)
     hint_task = next((name for name, kws in NUMERIC_HINTS.items()
-                      if any(k in q for k in kws)), None)
+                      if any(k in q for k in kws)), None) if wants_compute else None
     hint_diagram = any(k in q for k in DIAGRAM_HINTS)
 
     result = dict(lex)
@@ -338,7 +348,13 @@ def find_diagrams(query: str, classification: dict, limit: int = 2) -> list[dict
     scored.sort(key=lambda p: (-p[0], p[1]["id"]))
     # A diagram is only offered when the topic itself matches; keyword-only
     # overlap is too weak and produces mismatched IDs in answers.
-    return [d for s, d in scored[:limit] if s >= 5]
+    eligible = [(s, d) for s, d in scored if s >= 5]
+    if not eligible:
+        return []
+    # When one candidate has its own keyword evidence, topic-only siblings are
+    # dropped: offering them invites the model to cite a diagram nobody asked for.
+    best = eligible[0][0]
+    return [d for s, d in eligible[:limit] if s >= best]
 
 
 # --------------------------------------------------------------------------
