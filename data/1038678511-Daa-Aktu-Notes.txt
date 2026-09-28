@@ -1,0 +1,849 @@
+       Design and Analysis
+         of Algorithms
+         Complete Study Material & Notes
+Prepared for AKTU (Dr. A.P.J. Abdul Kalam Technical University)
+            B.Tech Computer Science Engineering
+
+
+
+
+                             Page 1
+Table of Contents
+
+Unit I: Introduction & Asymptotic Analysis
+  1.1 Growth of Functions & Asymptotic Notations
+  1.2 Recurrences & Master Theorem
+  1.3 Advanced Sorting Algorithms
+
+Unit II: Advanced Data Structures
+  2.1 Red-Black Trees
+  2.2 B-Trees
+  2.3 Binomial and Fibonacci Heaps
+
+Unit III: Divide & Conquer and Greedy Methods
+  3.1 Divide and Conquer Paradigm
+  3.2 Greedy Algorithms Overview
+  3.3 Fractional Knapsack & Job Sequencing
+  3.4 Huffman Coding
+
+Unit IV: Dynamic Programming & Graph Algorithms
+  4.1 Dynamic Programming Principles
+  4.2 Matrix Chain Multiplication & LCS
+  4.3 0/1 Knapsack Problem
+  4.4 Graph Algorithms: Traversals & MST
+  4.5 Shortest Path Algorithms
+
+Unit V: String Matching & NP-Completeness
+  5.1 String Matching Algorithms (Rabin-Karp, KMP)
+  5.2 P, NP, NP-Hard, and NP-Complete Classes
+  5.3 Approximation Algorithms
+
+
+
+
+                                     Page 2
+Unit I: Introduction & Asymptotic Analysis
+
+ 1.1 Growth of Functions & Asymptotic Notations
+
+In computer science, the analysis of algorithms is the process of finding the
+computational complexity of algorithms—the amount of time, storage, or other
+resources needed to execute them. Usually, this involves determining a function
+that relates the length of an algorithm's input to the number of steps it takes (its
+time complexity) or the number of storage locations it uses (its space complexity).
+
+Asymptotic notations are mathematical tools used to represent the time
+complexity of algorithms for asymptotic analysis. They allow us to evaluate the
+performance of an algorithm independent of hardware limitations.
+
+Big-O Notation (O)
+
+Big-O notation represents the upper bound of the running time of an algorithm. It
+gives the worst-case complexity. A function f(n) is said to be O(g(n)) if there exist
+positive constants c and n0 such that:
+
+
+
+                         0 ≤ f(n) ≤ c · g(n) for all n ≥ n0
+
+
+This means that for sufficiently large inputs, the algorithm will not take more time
+than c · g(n). It guarantees that the algorithm will complete within a certain time
+frame.
+
+Omega Notation (Ω)
+
+Omega notation provides an asymptotic lower bound. It gives the best-case
+complexity of an algorithm. A function f(n) is said to be Ω(g(n)) if there exist
+positive constants c and n0 such that:
+
+
+
+
+                                         Page 3
+                            0 ≤ c · g(n) ≤ f(n) for all n ≥ n0
+
+
+This means the algorithm will take at least this much time to execute for large
+inputs.
+
+Theta Notation (Θ)
+
+Theta notation encloses the function from above and below. It provides exact
+asymptotic behavior (average case). A function f(n) is Θ(g(n)) if there exist positive
+constants c1, c2, and n0 such that:
+
+
+
+                    0 ≤ c1 · g(n) ≤ f(n) ≤ c2 · g(n) for all n ≥ n0
+
+
+
+ 1.2 Recurrences & Master Theorem
+
+A recurrence is an equation or inequality that describes a function in terms of its
+value on smaller inputs. Recurrences are frequently used in analyzing the time
+complexity of divide-and-conquer algorithms.
+
+
+
+
+  The Master Theorem
+
+  The Master Theorem provides a cookbook method for solving recurrences of
+  the form:
+
+
+
+                                 T(n) = aT(n/b) + f(n)
+
+
+  Where a ≥ 1 and b > 1 are constants, and f(n) is an asymptotically positive
+  function. This formula describes an algorithm that divides a problem of size n
+  into a subproblems, each of size n/b, where the division and combining of
+  results take f(n) time.
+
+
+
+
+                                          Page 4
+The Master Theorem involves comparing the function f(n) with the function nlogba.
+There are three primary cases:
+
+  1. Case 1: If f(n) = O(nlogba - ε) for some constant ε > 0, then T(n) = Θ(nlogba). Here,
+    the cost is dominated by the leaves of the recursion tree.
+
+  2. Case 2: If f(n) = Θ(nlogba), then T(n) = Θ(nlogba \log n). The cost is evenly
+    distributed across the levels of the tree.
+
+  3. Case 3: If f(n) = Ω(nlogba + ε) for some constant ε > 0, and if a · f(n/b) ≤ c · f(n) for
+    some constant c < 1 and all sufficiently large n (regularity condition), then T(n)
+    = Θ(f(n)). The cost is dominated by the root of the tree.
+
+
+Example of Master Theorem
+
+Consider the recurrence for Merge Sort: T(n) = 2T(n/2) + \Theta(n).
+
+   • Here, a = 2, b = 2, and f(n) = n.
+
+   • Calculate nlogba = nlog22 = n1 = n.
+
+   • Since f(n) = \Theta(nlogba), this matches Case 2.
+
+   • Therefore, T(n) = \Theta(n \log n).
+
+
+
+ 1.3 Advanced Sorting Algorithms
+
+Sorting algorithms represent a fundamental class of algorithms studied in DAA.
+Let's look at the sophisticated sorting techniques that use divide-and-conquer and
+heap data structures.
+
+Merge Sort
+
+Merge sort is a perfect example of the divide-and-conquer paradigm. It divides
+the input array in half, recursively sorts the two halves, and then merges the
+sorted halves back together.
+
+
+
+
+                                           Page 5
+  Algorithm MergeSort(A, p, r)
+  1. if p < r
+  2.      q = floor((p + r) / 2)
+  3.      MergeSort(A, p, q)
+  4.      MergeSort(A, q + 1, r)
+  5.      Merge(A, p, q, r)
+
+
+
+The time complexity is strictly \Theta(n \log n) in all cases (best, worst, average)
+because the array is always divided into two halves, taking \Theta(\log n) levels of
+recursion, and merging takes \Theta(n) time per level. The space complexity is O(n)
+due to the auxiliary array required for merging.
+
+Quick Sort
+
+Quick sort also follows divide and conquer but differs from merge sort by doing
+all the heavy lifting in the partition phase. It selects a 'pivot' element and
+partitions the array such that elements smaller than the pivot are on the left, and
+larger elements are on the right.
+
+
+  Algorithm QuickSort(A, p, r)
+  1. if p < r
+  2.      q = Partition(A, p, r)
+  3.      QuickSort(A, p, q - 1)
+  4.      QuickSort(A, q + 1, r)
+
+
+  Algorithm Partition(A, p, r)
+  1. x = A[r]      // choosing last element as pivot
+  2. i = p - 1
+  3. for j = p to r - 1
+  4.      if A[j] <= x
+  5.            i = i + 1
+  6.            exchange A[i] with A[j]
+  7. exchange A[i + 1] with A[r]
+  8. return i + 1
+
+
+
+Time Complexity:
+
+  • Best Case: Occurs when the partition process always divides the array into
+    two nearly equal halves. The recurrence is T(n) = 2T(n/2) + \Theta(n), leading to
+    O(n \log n).
+
+
+
+
+                                          Page 6
+   • Worst Case: Occurs when the array is already sorted (if the last element is the
+    pivot). The recurrence becomes T(n) = T(n-1) + \Theta(n), yielding O(n2).
+    Randomized quicksort can mitigate this.
+
+Heap Sort
+
+Heap sort views the array as a nearly complete binary tree. It first builds a max-
+heap from the array, then repeatedly extracts the maximum element and restores
+the heap property.
+
+
+  Algorithm HeapSort(A)
+  1. Build-Max-Heap(A)
+  2. for i = A.length downto 2
+  3.      exchange A[1] with A[i]
+  4.      A.heap-size = A.heap-size - 1
+  5.      Max-Heapify(A, 1)
+
+
+
+The time complexity is O(n \log n) because building the heap takes O(n) time, and
+each of the n-1 calls to Max-Heapify takes O(\log n) time. Heap sort is an in-place
+algorithm, giving it a space complexity of O(1).
+
+
+
+
+                                       Page 7
+Unit II: Advanced Data Structures
+
+ 2.1 Red-Black Trees
+
+A Red-Black tree is a binary search tree with an extra bit of storage per node: its
+color, which can be either RED or BLACK. By constraining the node colors on any
+simple path from the root to a leaf, red-black trees ensure that no such path is
+more than twice as long as any other, so the tree is approximately balanced. This
+guarantees that operations like insertion, deletion, and searching take O(\log n)
+time in the worst case.
+
+
+
+
+  Properties of Red-Black Trees
+
+    1. Every node is either red or black.
+
+    2. The root is black.
+
+    3. Every leaf (NIL pointer) is black.
+
+    4. If a node is red, then both its children are black. (No two adjacent red
+      nodes on a path).
+
+    5. For each node, all simple paths from the node to descendant leaves
+      contain the same number of black nodes (the black-height).
+
+
+
+When nodes are inserted or deleted, the properties of the red-black tree may be
+violated. To restore them, we use two operations: recoloring and rotations (Left-
+Rotate and Right-Rotate). Rotations alter the structure of the tree while preserving
+the binary search tree property.
+
+
+
+ 2.2 B-Trees
+
+B-trees are highly balanced search trees designed to work well on magnetic disks
+or other direct-access secondary storage devices. Unlike binary search trees
+
+
+                                        Page 8
+where each node holds only one key, B-tree nodes can hold many keys and have
+many children. This drastically reduces the height of the tree, thereby minimizing
+disk I/O operations.
+
+Properties of B-Trees
+
+A B-tree of minimum degree t \ge 2 has the following properties:
+
+   • Every node has at most 2t - 1 keys and 2t children.
+
+   • Every node (except the root) has at least t - 1 keys and t children.
+
+   • All leaves appear on the same level (the tree is perfectly balanced).
+
+   • A node with k children contains exactly k - 1 keys, which divide the ranges of
+    the keys stored in the subtrees.
+
+Operations on B-Trees:
+
+1. Search: Generalization of binary search. Time complexity is O(t \log_t n).
+
+2. Insertion: Keys are always inserted at the leaf level. If the leaf is full (contains
+2t - 1 keys), it splits into two nodes of t - 1 keys each, and the median key is pushed
+up to the parent. This splitting may propagate up to the root, which is how a B-
+tree grows in height.
+
+
+
+ 2.3 Binomial and Fibonacci Heaps
+
+These advanced heap structures are primarily used to implement priority queues
+efficiently, especially for algorithms like Dijkstra's Shortest Path and Prim's
+Minimum Spanning Tree, where the `Decrease-Key` operation is performed
+frequently.
+
+Binomial Heaps
+
+A binomial heap is implemented as a collection of binomial trees. A binomial tree
+B_k is an ordered tree defined recursively. The Binomial Heap supports
+operations like union, insertion, and extracting the minimum in O(\log n) time. The
+merging operation is particularly fast compared to binary heaps.
+
+
+
+
+                                         Page 9
+Fibonacci Heaps
+
+A Fibonacci heap is a collection of rooted trees that are min-heap ordered. It is
+similar to a binomial heap but has a looser structure, allowing for delayed
+maintenance (lazy operations). This gives Fibonacci heaps excellent amortized
+running times.
+
+   • Insert: O(1) amortized.
+
+   • Find-Min: O(1) amortized.
+
+   • Decrease-Key: O(1) amortized (This is the massive advantage over binary/
+    binomial heaps which take O(\log n)).
+
+   • Extract-Min: O(\log n) amortized.
+
+Because of the O(1) `Decrease-Key` operation, using a Fibonacci heap improves the
+time complexity of Dijkstra's algorithm from O((V + E) \log V) to O(V \log V + E).
+
+
+
+
+                                         Page 10
+Unit III: Divide & Conquer and Greedy
+Methods
+
+ 3.1 Divide and Conquer Paradigm
+
+Divide and Conquer is a fundamental algorithmic design paradigm. It works by
+recursively breaking down a problem into two or more sub-problems of the same
+or related type, until these become simple enough to be solved directly. The
+solutions to the sub-problems are then combined to give a solution to the original
+problem.
+
+Steps involved:
+
+   • Divide: Break the problem into smaller, independent subproblems.
+
+   • Conquer: Solve the subproblems recursively. If they are small enough, solve
+    them fundamentally.
+
+   • Combine: Merge the solutions of the subproblems to form the final solution.
+
+
+
+ 3.2 Greedy Algorithms Overview
+
+A greedy algorithm builds up a solution piece by piece, always choosing the next
+piece that offers the most obvious and immediate benefit. Greedy algorithms are
+used for optimization problems. They make a locally optimal choice in the hope
+that this choice will lead to a globally optimal solution.
+
+
+
+
+                                        Page 11
+  Elements of a Greedy Strategy
+
+    1. Greedy Choice Property: A globally optimal solution can be arrived at
+      by making a locally optimal (greedy) choice. In other words, we can make
+      the best choice available at the moment without worrying about the
+      future consequences.
+
+    2. Optimal Substructure: A problem exhibits optimal substructure if an
+      optimal solution to the problem contains within it optimal solutions to
+      subproblems.
+
+
+
+Note: Greedy algorithms do not always yield optimal solutions. A rigorous proof is
+usually required to guarantee that a greedy algorithm will find the optimal
+solution for a specific problem.
+
+
+
+ 3.3 Fractional Knapsack Problem
+
+In the Fractional Knapsack problem, we are given n items, each with a weight w_i
+and a value v_i. We have a knapsack of capacity W. The goal is to maximize the
+total value in the knapsack. Unlike the 0/1 knapsack problem, we are allowed to
+take fractions of items.
+
+Greedy Strategy:
+
+  1. Calculate the value-to-weight ratio v_i / w_i for each item.
+
+  2. Sort the items in descending order of this ratio.
+
+  3. Iterate through the sorted items: if the knapsack has enough capacity, take the
+    whole item. If not, take the fractional amount needed to fill the knapsack.
+
+
+
+
+                                        Page 12
+  Algorithm Fractional-Knapsack(v, w, W)
+  1. Compute ratio[i] = v[i] / w[i] for i = 1 to n
+  2. Sort items descending by ratio
+  3. total_value = 0
+  4. for i = 1 to n:
+  5.      if w[i] <= W:
+  6.           total_value = total_value + v[i]
+  7.           W = W - w[i]
+  8.      else:
+  9.           total_value = total_value + v[i] * (W / w[i])
+  10.          break
+  11. return total_value
+
+
+
+Complexity: The sorting step takes O(n \log n), and the iteration takes O(n). Overall
+time complexity is O(n \log n).
+
+
+
+ 3.4 Huffman Coding
+
+Huffman coding is an optimal prefix code used for lossless data compression. It
+uses a greedy approach to assign variable-length codes to input characters, with
+lengths based on the frequencies of the corresponding characters. The most
+frequent character gets the shortest code.
+
+Algorithm Construction:
+
+We use a priority queue (min-heap) to build a binary tree from the bottom up.
+
+
+  Algorithm Huffman(C)
+  // C is a set of n characters and their frequencies
+  1. n = |C|
+  2. Q = C    // Priority queue based on frequency
+  3. for i = 1 to n - 1
+  4.      allocate a new node z
+  5.      z.left = x = Extract-Min(Q)
+  6.      z.right = y = Extract-Min(Q)
+  7.      z.freq = x.freq + y.freq
+  8.      Insert(Q, z)
+  9. return Extract-Min(Q) // Return the root of the tree
+
+
+
+Tracing an Example:
+
+
+
+
+                                       Page 13
+Suppose we have characters with frequencies: a:45, b:13, c:12, d:16, e:9, f:5.
+
+   • Step 1: Extract minimums 'f'(5) and 'e'(9). Combine into a node of 14.
+
+   • Step 2: Remaining heap nodes: c:12, b:13, (fe):14, d:16, a:45. Extract 'c'(12) and
+    'b'(13). Combine to 25.
+
+   • Step 3: Extract (fe):14 and d:16. Combine to 30.
+
+   • Step 4: Extract (cb):25 and (fed):30. Combine to 55.
+
+   • Step 5: Extract a:45 and (cbfed):55. Combine to 100 (Root).
+
+By traversing left edges as '0' and right edges as '1', we obtain prefix-free binary
+codes for optimal compression. The time complexity is O(n \log n) due to priority
+queue operations.
+
+
+
+
+                                        Page 14
+Unit IV: Dynamic Programming & Graph
+Algorithms
+
+ 4.1 Dynamic Programming Principles
+
+Dynamic Programming (DP) is a method for solving complex problems by
+breaking them down into simpler overlapping subproblems. It is similar to
+divide-and-conquer, but whereas divide-and-conquer breaks a problem into
+mutually exclusive subproblems, DP applies when subproblems overlap—
+meaning subproblems share sub-subproblems.
+
+To apply DP, a problem must exhibit two key properties:
+
+  1. Optimal Substructure: The optimal solution to the given problem can be
+    obtained using optimal solutions of its subproblems.
+
+  2. Overlapping Subproblems: The recursive algorithm repeatedly solves the
+    same subproblems. DP solves each subproblem just once and saves its answer
+    in a table, thereby avoiding the work of recomputing the answer.
+
+There are two ways to implement DP:
+
+   • Top-down (Memoization): Write the recursive algorithm and cache the
+    results of subproblems in an array/hash map.
+
+   • Bottom-up (Tabulation): Solve the smallest subproblems first, iteratively fill
+    a table, and build up to the solution of the main problem.
+
+
+
+ 4.2 Matrix Chain Multiplication
+
+Given a sequence of n matrices A_1, A_2, ..., A_n, we wish to compute the product.
+Matrix multiplication is associative, so we can parenthesize the product in many
+ways. The cost of multiplying an p imes q matrix by a q imes r matrix is p imes q imes
+r scalar multiplications. Our goal is to fully parenthesize the product in a way that
+minimizes the number of scalar multiplications.
+
+
+
+                                       Page 15
+Let m[i, j] be the minimum number of scalar multiplications needed to compute
+the matrix A_{i..j}. The dimensions of matrix A_i are P_{i-1} imes P_i.
+
+
+
+                                  m[i, j] = 0 if i = j
+   m[i, j] = \min_{i \le k < j} \{ m[i, k] + m[k+1, j] + P_{i-1}P_kP_j \} if i < j
+
+
+The time complexity for this DP approach is O(n^3) since we are filling an n imes n
+table, and computing each entry takes O(n) time. The space complexity is O(n^2).
+
+
+
+ 4.3 0/1 Knapsack Problem
+
+In the 0/1 Knapsack problem, items cannot be broken into fractions. You either
+take an item (1) or leave it (0). This prevents the greedy strategy from working
+properly because taking a high-value item might prevent utilizing the remaining
+capacity effectively.
+
+Let DP[i][w] be the maximum value that can be obtained using the first i items
+with a maximum weight capacity w.
+
+
+  Algorithm 01-Knapsack(v, wt, W, n)
+  1. Create a 2D array DP[n+1][W+1] initialized to 0
+  2. for i = 1 to n:
+  3.      for w = 1 to W:
+  4.           if wt[i] <= w:
+  5.               // Max of including the item or excluding it
+  6.               DP[i][w] = max(v[i] + DP[i-1][w - wt[i]], DP[i-1][w])
+  7.           else:
+  8.               // Cannot include the item
+  9.               DP[i][w] = DP[i-1][w]
+  10. return DP[n][W]
+
+
+
+The time and space complexity of this algorithm is O(nW), where n is the number
+of items and W is the knapsack capacity. Note that this is pseudo-polynomial time
+because it depends on the magnitude of W.
+
+
+
+
+                                        Page 16
+  4.4 Graph Algorithms: Traversals & MST
+
+Graph Traversals (BFS and DFS)
+
+   • Breadth-First Search (BFS): Explores a graph layer by layer, starting from a
+    source vertex. It uses a Queue data structure. Time complexity: O(V + E). It is
+    useful for finding the shortest path on unweighted graphs.
+
+   • Depth-First Search (DFS): Explores as far as possible along each branch
+    before backtracking. It uses a Stack (or recursion). Time complexity: O(V + E).
+    It is useful for topological sorting, finding strongly connected components,
+    and cycle detection.
+
+Minimum Spanning Tree (MST)
+
+A Minimum Spanning Tree of a connected, undirected, weighted graph is a
+subgraph that is a tree, includes all the vertices, and has the minimum possible
+total edge weight.
+
+Kruskal's Algorithm:
+
+A greedy algorithm that sorts all edges in non-decreasing order of their weight. It
+then picks the smallest edge. If it doesn't form a cycle with the already included
+edges (using a Disjoint Set Union data structure), it adds it to the MST. Complexity:
+O(E \log E).
+
+Prim's Algorithm:
+
+A greedy algorithm that starts with an empty spanning tree. The idea is to
+maintain two sets of vertices: vertices included in MST and vertices not yet
+included. At every step, it considers all edges that connect the two sets, and picks
+the minimum weight edge. Complexity using a min-heap: O(E \log V).
+
+
+
+  4.5 Single Source Shortest Path
+
+Dijkstra's Algorithm
+
+Dijkstra's algorithm solves the single-source shortest path problem for graphs
+with non-negative edge weights. It uses a greedy approach, maintaining a priority
+
+
+                                       Page 17
+queue of vertices to repeatedly extract the vertex with the minimum shortest-path
+estimate.
+
+
+  Algorithm Dijkstra(G, w, s)
+  1. Initialize-Single-Source(G, s)
+  2. S = empty set
+  3. Q = G.V // priority queue keyed by distance
+  4. while Q is not empty:
+  5.        u = Extract-Min(Q)
+  6.        S = S U {u}
+  7.        for each vertex v in G.Adj[u]:
+  8.            Relax(u, v, w)
+
+
+
+Time Complexity: O((V + E) \log V) with a binary heap. If negative weight edges
+exist, Dijkstra's algorithm may fail.
+
+Bellman-Ford Algorithm
+
+The Bellman-Ford algorithm solves the single-source shortest path problem even
+if edges have negative weights. It can also detect negative weight cycles reachable
+from the source.
+
+
+  Algorithm Bellman-Ford(G, w, s)
+  1. Initialize-Single-Source(G, s)
+  2. for i = 1 to |G.V| - 1:
+  3.        for each edge (u, v) in G.E:
+  4.            Relax(u, v, w)
+  5. for each edge (u, v) in G.E:
+  6.        if v.d > u.d + w(u, v):
+  7.            return FALSE // Negative cycle detected
+  8. return TRUE
+
+
+
+Time Complexity: O(VE). It simply relaxes all edges |V|-1 times. By the properties of
+shortest paths, if there are no negative cycles, the shortest path will contain at
+most |V|-1 edges.
+
+
+
+
+                                        Page 18
+Unit V: String Matching & NP-Completeness
+
+ 5.1 String Matching Algorithms
+
+String matching deals with finding all occurrences of a shorter pattern string P
+(length m) within a longer text string T (length n).
+
+
+Naive String Matching
+
+The naive approach simply slides the pattern over the text one character at a time
+and checks for a match. The time complexity is O((n - m + 1) m), which simplifies to
+O(nm) in the worst case.
+
+
+Rabin-Karp Algorithm
+
+Rabin-Karp improves string matching by using a hash function. Instead of
+comparing character by character initially, it compares the hash value of the
+pattern with the hash value of the current substring of the text. If the hash values
+match, then it does a character-by-character comparison to confirm (avoiding
+spurious hits). It uses a rolling hash mechanism so that the hash of the next
+substring can be computed in O(1) time. The average-case time is O(n + m), but
+worst-case remains O(nm).
+
+
+Knuth-Morris-Pratt (KMP) Algorithm
+
+The KMP algorithm achieves a linear time complexity O(n + m) by avoiding
+redundant comparisons. It uses a prefix table (also known as the LPS array -
+Longest Proper Prefix which is also Suffix) to determine how far to shift the
+pattern when a mismatch occurs, without re-evaluating previously matched
+characters.
+
+
+
+
+                                        Page 19
+  Algorithm Compute-Prefix-Function(P)
+  1. m = P.length
+  2. let pi[1..m] be a new array
+  3. pi[1] = 0
+  4. k = 0
+  5. for q = 2 to m
+  6.      while k > 0 and P[k+1] != P[q]
+  7.             k = pi[k]
+  8.      if P[k+1] == P[q]
+  9.             k = k + 1
+  10.     pi[q] = k
+  11. return pi
+
+
+
+
+ 5.2 NP-Completeness Theory
+
+In theoretical computer science, problems are classified based on their
+complexity and the possibility of finding an efficient (polynomial time) algorithm
+to solve them.
+
+
+
+ Complexity Class            Definition
+
+
+                             The set of decision problems that can be SOLVED by a
+ P (Polynomial)              deterministic Turing machine in polynomial time O(n^k).
+                             Examples: Sorting, Shortest Path.
+
+
+                             The set of decision problems for which a proposed
+ NP (Nondeterministic
+                             solution can be VERIFIED by a deterministic Turing
+ Polynomial)
+                             machine in polynomial time. (Note: P is a subset of NP).
+
+
+                             A problem X is NP-Hard if every problem in NP can be
+ NP-Hard                     reduced to X in polynomial time. NP-hard problems do
+                             not have to be in NP themselves.
+
+
+                             A problem is NP-Complete if it is both in NP AND NP-
+                             Hard. These are the "hardest" problems in NP. If a
+ NP-Complete (NPC)
+                             polynomial time algorithm is found for any NPC problem,
+                             then P = NP.
+
+
+
+
+                                          Page 20
+Polynomial Reductions and SAT
+
+To prove a problem is NP-Complete, we typically show that it is in NP, and then
+show that a known NP-Complete problem can be transformed into our problem in
+polynomial time. The first problem proven to be NP-Complete was the Boolean
+Satisfiability Problem (SAT), courtesy of the Cook-Levin Theorem.
+
+
+
+  Important NP-Complete Problems:
+
+     • Traveling Salesperson Problem (TSP)
+
+     • 0/1 Knapsack Problem (Decision version)
+
+     • Vertex Cover Problem
+
+     • Clique Problem
+
+     • Graph Coloring Problem
+
+
+
+
+ 5.3 Approximation Algorithms
+
+Since we do not expect to find exact polynomial-time algorithms for NP-Complete
+problems, we look for near-optimal solutions in polynomial time. These are called
+approximation algorithms.
+
+An approximation algorithm has an approximation ratio ho(n) if for any input of
+size n, the cost C of the solution produced is within a factor of ho(n) of the optimal
+cost C^*:
+
+
+
+             \max \left( rac{C}{C^*}, rac{C^*}{C} ight) \le ho(n)
+
+
+Example: Vertex Cover Approximation
+
+
+
+
+                                       Page 21
+The vertex cover problem asks for the minimum set of vertices such that every
+edge in the graph is incident to at least one vertex in the set. A simple 2-
+approximation algorithm works as follows:
+
+ 1. Start with an empty set of vertices C.
+
+ 2. While there are edges left in the graph:
+
+ 3.   Pick an arbitrary edge (u, v).
+
+ 4.   Add both u and v to C.
+
+ 5.   Remove all edges incident on u or v.
+
+ 6. Return C.
+
+This greedy strategy guarantees a cover that is at most twice as large as the
+optimal minimum vertex cover (Approximation ratio = 2).
+
+
+
+
+                                       Page 22
+
