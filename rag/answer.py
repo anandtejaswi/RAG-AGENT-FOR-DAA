@@ -19,6 +19,7 @@ from .config import chat_model, model_label
 from .retrieve import retrieve
 
 RECURSION_LIMIT = 12
+MAX_TOKENS = 6000
 DIAG_RE = re.compile(r"DIAG_DAA_[A-Z0-9_]+")
 
 SYSTEM_PROMPT = """You are an examiner-grade tutor for the AKTU B.Tech subject \
@@ -76,7 +77,7 @@ def agent():
         from deepagents import FilesystemMiddleware, create_deep_agent
 
         _AGENT = create_deep_agent(
-            model=chat_model(),
+            model=chat_model(max_tokens=MAX_TOKENS),
             tools=_tools(),
             system_prompt=SYSTEM_PROMPT,
             # The agent needs no workspace: context arrives in the prompt. Only
@@ -123,11 +124,22 @@ def _collect_tool_calls(messages) -> list[dict]:
 
 
 def _final_text(messages) -> str:
+    """Last assistant message carrying text.
+
+    A message may carry text *and* tool calls, so requiring no tool calls
+    silently dropped otherwise-valid answers.
+    """
     for m in reversed(messages):
-        if isinstance(m, AIMessage) and not m.tool_calls:
-            text = m.content if isinstance(m.content, str) else str(m.content)
-            if text.strip():
-                return text.strip()
+        if not isinstance(m, AIMessage):
+            continue
+        content = m.content
+        if isinstance(content, list):  # provider returned content blocks
+            content = "".join(
+                b.get("text", "") for b in content if isinstance(b, dict)
+            )
+        text = content if isinstance(content, str) else ""
+        if text.strip():
+            return text.strip()
     return ""
 
 
@@ -176,13 +188,17 @@ def ask(query: str, use_llm_classifier: bool = True) -> dict:
     message = f"{context}\n\nQUESTION\n{query}"
 
     try:
-        result = agent().invoke(
-            {"messages": [HumanMessage(content=message)]},
-            config={"recursion_limit": RECURSION_LIMIT},
-        )
-        messages = result["messages"]
-        record["tool_calls"] = _collect_tool_calls(messages)
-        answer = _final_text(messages)
+        answer, attempts = "", 0
+        while not answer and attempts < 2:
+            attempts += 1
+            result = agent().invoke(
+                {"messages": [HumanMessage(content=message)]},
+                config={"recursion_limit": RECURSION_LIMIT},
+            )
+            messages = result["messages"]
+            record["tool_calls"] = _collect_tool_calls(messages)
+            answer = _final_text(messages)
+        record["attempts"] = attempts
     except Exception as exc:
         record["error"] = f"{type(exc).__name__}: {exc}"[:400]
         record["answer"] = ""

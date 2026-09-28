@@ -142,7 +142,11 @@ def lexical_classify(query: str) -> dict:
     # Confidence reflects the margin over the next best topic, so a query whose
     # terms fit two topics equally well is deliberately left unconfident.
     margin = (best_score - runner) / best_score
-    confidence = round(min(0.95, 0.45 + 0.5 * margin), 3)
+    # Absolute evidence matters as well as the margin. One weak keyword ("partition"
+    # in a distributed-systems question) must not read as a confident syllabus hit,
+    # because that would defeat the out-of-scope gate. A strong keyword scores 4.
+    evidence = min(1.0, best_score / 4.0)
+    confidence = round(min(0.95, (0.45 + 0.5 * margin) * evidence), 3)
     return {
         "unit": best["unit"],
         "topic": best["topic"],
@@ -244,8 +248,13 @@ def classify(query: str, use_llm: bool = True) -> dict:
                 )
                 if llm["topic"] == lex["topic"]:
                     result["confidence"] = round(min(0.99, max(llm["confidence"], lex["confidence"], 0.8)), 3)
-            elif lex["topic"] is None:
+            elif lex["confidence"] < TOPIC_FILTER_CONFIDENCE:
+                # The model found no syllabus topic and the keyword evidence is
+                # weak: treat that agreement as out of scope.
                 result["topic"] = None
+                result["unit"] = None
+                result["confidence"] = 0.0
+                result["source"] = "llm:none"
             result["needs_diagram"] = hint_diagram or llm["needs_diagram"]
             result["numeric_task"] = hint_task or llm["numeric_task"]
     return result
@@ -273,25 +282,31 @@ def search(query: str, classification: dict, top_k: int = TOP_K) -> tuple[list[S
         fused[int(pos)] = fused.get(int(pos), 0.0) + 1.0 / (RRF_K + rank + 1)
 
     topic = classification.get("topic")
+    unit = classification.get("unit")
     confidence = float(classification.get("confidence") or 0.0)
     mode = "none"
-    if topic:
-        matching = [p for p in fused if chunks[answerable[p]]["topic"] == topic]
-        if confidence >= TOPIC_FILTER_CONFIDENCE and len(matching) >= MIN_TOPIC_CHUNKS:
-            fused = {p: s for p, s in fused.items() if p in matching}
-            mode = "filter:topic"
-        else:
-            unit = classification.get("unit")
-            unit_matching = [p for p in fused if chunks[answerable[p]]["unit"] == unit]
-            if confidence >= TOPIC_FILTER_CONFIDENCE and len(unit_matching) >= MIN_TOPIC_CHUNKS:
-                fused = {p: s for p, s in fused.items() if p in unit_matching}
-                mode = "filter:unit"
-            else:
-                for p in matching:
-                    fused[p] *= TOPIC_BOOST
-                mode = "boost:topic"
 
-    ranked = sorted(fused.items(), key=lambda kv: -kv[1])[:top_k]
+    def tier(pos: int) -> int:
+        """0 = on topic, 1 = same unit, 2 = elsewhere. Lower sorts first."""
+        c = chunks[answerable[pos]]
+        if c["topic"] == topic:
+            return 0
+        return 1 if c["unit"] == unit else 2
+
+    if topic and confidence >= TOPIC_FILTER_CONFIDENCE:
+        # Priority ranking rather than a hard filter: on-topic chunks always
+        # occupy the leading positions, and the remaining slots are backfilled by
+        # fused score. A hard filter lost recall whenever a topic had only one or
+        # two chunks, and the unit fallback could not separate colliding topics.
+        matching = sum(1 for p in fused if tier(p) == 0)
+        mode = f"priority:topic({matching} on-topic)"
+        ranked = sorted(fused.items(), key=lambda kv: (tier(kv[0]), -kv[1]))[:top_k]
+    else:
+        if topic:
+            for p in [p for p in fused if tier(p) == 0]:
+                fused[p] *= TOPIC_BOOST
+            mode = "boost:topic"
+        ranked = sorted(fused.items(), key=lambda kv: -kv[1])[:top_k]
     out = []
     for pos, score in ranked:
         c = chunks[answerable[pos]]

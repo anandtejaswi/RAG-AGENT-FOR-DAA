@@ -150,6 +150,27 @@ rotations at the lowest unbalanced node:
     LR case  (left child, right subtree)  left rotation then right rotation
     RL case  (right child, left subtree)  right rotation then left rotation
 
+Worked example of the LL case. Insert 30, then 20, then 10 into an empty AVL
+tree. After inserting 30 the tree is a single node with balance factor 0. After
+inserting 20 the root 30 has balance factor +1, which is still allowed. After
+inserting 10 the left subtree of 30 has height 2 and its right subtree has height
+0, so the balance factor of 30 becomes +2 and the AVL property is violated at 30.
+The offending node 10 is in the left subtree of the left child 20, so this is the
+LL case and one single right rotation about 30 repairs it. Node 20 becomes the
+root with 10 as its left child and 30 as its right child. After the rotation the
+balance factors are 0 for 20, 0 for 10 and 0 for 30, and the height drops from 3
+to 2.
+
+Worked example of the LR case. Insert 30, then 10, then 20. The balance factor of
+30 becomes +2 while the new node 20 sits in the right subtree of the left child
+10, which is the LR case. A left rotation at 10 turns the configuration into the
+LL case, and a right rotation at 30 then finishes the repair, leaving 20 as the
+root with children 10 and 30 and every balance factor 0.
+
+Deletion uses the same four cases, but where an insertion needs at most one
+rotation, a deletion may require rotations at every node on the path back to the
+root, so a deletion costs O(log n) rotations in the worst case.
+
 A rotation runs in O(1) time and the height of an AVL tree with n nodes is
 O(log n), so search, insert and delete are all O(log n). Red-black trees use the
 same rotation primitives but a weaker balance condition, allowing fewer rotations
