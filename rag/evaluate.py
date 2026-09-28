@@ -21,7 +21,7 @@ from .ingest import DATA, ROOT
 RESULTS = ROOT / "out" / "results.json"
 # The endpoint returns empty completions when hit too hard; 2 workers is the
 # rate at which every judge call came back with content.
-WORKERS = 2
+WORKERS = 3
 
 JUDGE_PROMPT = """You are grading one answer produced by a retrieval augmented \
 generation system for the AKTU subject Design and Analysis of Algorithms.
@@ -87,7 +87,8 @@ def judge(query: str, context: str, answer: str) -> dict:
         if attempt:
             time.sleep(2 * attempt)
         try:
-            resp = chat_model(temperature=0.0, max_tokens=1200).invoke(prompt)
+            resp = chat_model(temperature=0.0, max_tokens=1500,
+                                      reasoning_effort="low").invoke(prompt)
             text = resp.content if isinstance(resp.content, str) else str(resp.content)
             last = text
             match = re.search(r"\{.*\}", text, re.S)

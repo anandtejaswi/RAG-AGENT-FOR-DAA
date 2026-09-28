@@ -197,7 +197,8 @@ def llm_classify(query: str) -> dict | None:
         try:
             if attempt:
                 time.sleep(1.5 * attempt)
-            resp = chat_model(temperature=0.0, max_tokens=400).invoke(prompt)
+            resp = chat_model(temperature=0.0, max_tokens=800,
+                              reasoning_effort="low").invoke(prompt)
             text = resp.content if isinstance(resp.content, str) else str(resp.content)
             last = text
             match = re.search(r"\{.*\}", text, re.S)

@@ -31,9 +31,17 @@ def setting(name: str) -> str | None:
     return os.environ.get(name) or DEFAULTS.get(name)
 
 
-@lru_cache(maxsize=4)
-def chat_model(temperature: float = 0.0, max_tokens: int = 4096):
-    """Build the LangChain chat model named by the environment."""
+@lru_cache(maxsize=8)
+def chat_model(temperature: float = 0.0, max_tokens: int = 4096,
+               reasoning_effort: str | None = None):
+    """Build the LangChain chat model named by the environment.
+
+    `reasoning_effort` matters on reasoning models served through OpenRouter:
+    max_tokens covers reasoning *and* content, so a model that reasons freely can
+    spend the whole budget and return empty content. Structured-output callers
+    (the query router, the grading judge) pass "low" to keep the budget for the
+    JSON they need. The endpoint for GLM refuses to disable reasoning outright.
+    """
     provider = setting("MUNSHI_MODEL_PROVIDER")
     model = setting("MUNSHI_MODEL")
     api_key = setting("MUNSHI_MODEL_API_KEY")
@@ -53,6 +61,9 @@ def chat_model(temperature: float = 0.0, max_tokens: int = 4096):
 
         if not api_key:
             raise RuntimeError("MUNSHI_MODEL_API_KEY is not set; add it to .env")
+        extra: dict = {}
+        if reasoning_effort:
+            extra["reasoning"] = {"effort": reasoning_effort}
         return ChatOpenAI(
             model=model,
             temperature=temperature,
@@ -61,6 +72,7 @@ def chat_model(temperature: float = 0.0, max_tokens: int = 4096):
             base_url=setting("MUNSHI_MODEL_BASE_URL"),
             timeout=180,
             max_retries=3,
+            extra_body=extra or None,
         )
 
     raise ValueError(f"unsupported MUNSHI_MODEL_PROVIDER: {provider!r}")
