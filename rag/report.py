@@ -46,7 +46,7 @@ LABELS = {
 HEADING_RE = __import__("re").compile(r"^(#{1,4})\s", __import__("re").M)
 
 
-def demote(markdown: str, levels: int = 4) -> str:
+def demote(markdown: str, levels: int = 3) -> str:
     """Push an embedded answer's headings below the report's own sections.
 
     Generated answers use their own '##' headings. Inserted verbatim they would
@@ -154,6 +154,10 @@ def section_diagrams() -> str:
     reg = json.loads((DATA / "diagrams" / "diagrams.json").read_text())
     rows = [[d["id"], d["unit"], d["topic"], d["concept"], d["file"]]
             for d in reg["diagrams"]]
+    gallery = "\n\n".join(
+        f"**{d['id']}**\n\n![{d['concept']}](data/diagrams/{d['file']})\n\n*{d['caption']}*"
+        for d in reg["diagrams"]
+    )
     return f"""## 2. Diagram and Asset ID Index
 
 Every diagram asset carries a persistent identifier in the format
@@ -168,6 +172,10 @@ functions the answering agent calls, so a figure and an answer cannot disagree.
 Registry: `data/diagrams/diagrams.json`, {reg['count']} assets.
 
 {md_table(["Diagram ID", "Unit", "Topic", "Concept", "File"], rows)}
+
+### Rendered assets
+
+{gallery}
 
 **Linking mechanism.** At retrieval time the registry is searched by predicted
 topic and keyword overlap. Matching entries are injected into the prompt as a
@@ -473,6 +481,8 @@ pre { background: #f6f7f9; border: 1px solid #ddd; padding: 6px; font-size: 7.4p
       white-space: pre-wrap; word-wrap: break-word; font-family: "DejaVu Sans Mono", monospace; }
 code { font-family: "DejaVu Sans Mono", monospace; font-size: 8pt; }
 hr { border: none; border-top: 1px solid #ddd; margin: 14px 0; }
+img { max-width: 100%; height: auto; border: 1px solid #ddd; padding: 2px; }
+em { color: #555; }
 """
 
 
