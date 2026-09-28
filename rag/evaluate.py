@@ -64,24 +64,45 @@ def load_testset() -> dict:
     return json.loads((DATA / "testset.json").read_text())
 
 
+JUDGE_CONTEXT_LIMIT = 9000
+JUDGE_ANSWER_LIMIT = 6000
+
+
+def _clip(text: str, limit: int) -> str:
+    return text if len(text) <= limit else text[:limit] + "\n[... truncated for grading ...]"
+
+
 def judge(query: str, context: str, answer: str) -> dict:
-    prompt = JUDGE_PROMPT.format(query=query, context=context, answer=answer)
-    try:
-        resp = chat_model(temperature=0.0, max_tokens=500).invoke(prompt)
-        text = resp.content if isinstance(resp.content, str) else str(resp.content)
-        match = re.search(r"\{.*\}", text, re.S)
-        data = json.loads(match.group(0))
-        return {
+    """Grade one answer. Retries once, because a judge that returns no JSON would
+    otherwise silently void three of the nine metrics."""
+    prompt = JUDGE_PROMPT.format(
+        query=query,
+        context=_clip(context, JUDGE_CONTEXT_LIMIT),
+        answer=_clip(answer, JUDGE_ANSWER_LIMIT),
+    )
+    last = ""
+    for attempt in range(2):
+        try:
+            resp = chat_model(temperature=0.0, max_tokens=900).invoke(prompt)
+            text = resp.content if isinstance(resp.content, str) else str(resp.content)
+            last = text
+            match = re.search(r"\{.*\}", text, re.S)
+            if match is None:
+                continue
+            data = json.loads(match.group(0))
+            return {
             "context_recall": float(data.get("context_recall", 0.0)),
             "faithfulness": float(data.get("faithfulness", 0.0)),
             "answer_relevance": float(data.get("answer_relevance", 0.0)),
             "semantic_accuracy": float(data.get("semantic_accuracy", 0.0)),
-            "reason": str(data.get("reason", ""))[:300],
-            "error": None,
-        }
-    except Exception as exc:
-        return {"context_recall": None, "faithfulness": None, "answer_relevance": None,
-                "semantic_accuracy": None, "reason": "", "error": f"{type(exc).__name__}: {exc}"[:200]}
+                "reason": str(data.get("reason", ""))[:300],
+                "error": None,
+            }
+        except Exception as exc:
+            last = f"{type(exc).__name__}: {exc}"
+    return {"context_recall": None, "faithfulness": None, "answer_relevance": None,
+            "semantic_accuracy": None, "reason": "",
+            "error": f"judge returned no JSON after 2 attempts; last response: {last[:180]!r}"}
 
 
 def _numeric_match(expected: dict, tool_calls: list[dict], answer: str) -> tuple[float, str]:
@@ -188,7 +209,8 @@ def score_query(case: dict, record: dict) -> dict:
     if record["tool_calls"]:
         # Verified solver output is grounding evidence just as much as a passage.
         tools = "\n\n".join(
-            f"[VERIFIED SOLVER OUTPUT: {t['name']}({json.dumps(t['args'])})]\n{t['result']}"
+            f"[VERIFIED SOLVER OUTPUT: {t['name']}({json.dumps(t['args'])[:300]})]\n"
+            f"{(t['result'] or '')[:2000]}"
             for t in record["tool_calls"]
         )
         context = f"{context}\n\n{tools}"
