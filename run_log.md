@@ -217,7 +217,38 @@ rather than an unfair test:
 
 All eight retrieval checks and all nine solver checks now pass with no API key.
 
-### 4.9 Report structure
+### 4.9 Root cause of every empty completion
+
+The judge and the router kept returning empty strings under load, and the working
+theory was rate limiting. A direct probe of the endpoint disproved it. The
+response carried `reasoning_tokens=50`, `content=None` for a `max_tokens=50`
+request: **GLM-5.3-flash is a reasoning model and `max_tokens` covers reasoning
+tokens as well as content.** Every empty response was the model spending its
+whole budget thinking and having nothing left to say. This single cause explains
+the empty answer on Q04, the failed router call on Q14, and all 26 void judge
+gradings, all of which had been treated as separate problems.
+
+Measured on the same prompt:
+
+| Setting | Latency | Reasoning tokens | Content |
+|---|---|---|---|
+| `max_tokens=50` | 7.0s | 50 | empty |
+| `max_tokens=2000` | 2.6s | 58 | correct JSON |
+| `reasoning.enabled=false` | - | - | rejected: reasoning is mandatory on this endpoint |
+| `reasoning.effort=low` | 0.9s | 8 | correct JSON |
+
+The endpoint refuses to disable reasoning, so structured-output callers (the
+router and the judge) now request low reasoning effort and keep their budget for
+the JSON. The answering agent keeps full reasoning with a 6000 token budget,
+where the extra thinking is worth paying for. Latency for a router call dropped
+from about seven seconds to about one.
+
+The lesson recorded here for the report's limitations section: an empty
+completion is not the same as a failed request, and a grading harness that treats
+a void score as "no data" rather than as a failure will quietly report a perfect
+average over a handful of samples.
+
+### 4.10 Report structure
 
 The generated answers carry their own `##` headings. Inserted verbatim into the
 numerical demonstration section they registered as top-level report sections and

@@ -191,3 +191,24 @@ No web UI, no vector DB, no reranker, no multi-hop retrieval, no OCR of scanned 
 | `GOOGLE_API_KEY` | Confirmed as the Gemini env var in the RAG tutorial setup. | `deepagents/rag` → Setup | Keep. |
 
 Sections 2, 6 and 10 are superseded where this table says **Change**.
+
+---
+
+## 14. As-built notes (2026-09-29)
+
+The system was implemented as specified above, with these deviations recorded
+during the build. `run_log.md` holds the full engineering log.
+
+| Spec said | As built | Why |
+|---|---|---|
+| Gemini via `langchain-google-genai` | Provider chosen by environment; tested against `z-ai/glm-5.3-flash` through OpenRouter | The user supplied OpenRouter credentials. `rag/config.py` supports both; switching is a `.env` change. |
+| Topic filter, falling back to unit filter | Topic **priority ranking** with adaptive context size | A hard filter lost recall when a topic had fewer than three chunks, and the unit fallback could not separate topics inside one unit. |
+| Fixed top-5 context | On-topic chunks, topped up only to a minimum of three | Padding a thin topic to five chunks pulled unrelated passages into the context, which the brief's context relevance criterion penalises. |
+| Classifier confidence from the margin | Confidence scaled by absolute keyword evidence as well | A single incidental keyword with no competitor read as 0.95 confidence and defeated the out-of-scope gate. |
+| Out-of-scope gate on null topic | Also fires on a topic held with low confidence | Same cause as above; the gate needed to distrust weak topics, not only absent ones. |
+| Judge sees retrieved chunks | Judge also sees verified solver output | Tool-computed numbers looked unsupported to the judge, under-scoring faithfulness on every numeric query. |
+| `recursion_limit` and token budget | Plus low reasoning effort for structured-output calls | The served model is a reasoning model whose `max_tokens` covers reasoning, so structured callers were returning empty content. |
+
+Diagram assets were generated rather than extracted, because the supplied notes
+contain no figures. Ten syllabus topics absent from the supplied notes were
+authored into `data/notes_supplement.md` and tagged with their own source.
