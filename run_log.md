@@ -177,6 +177,52 @@ long enough that the model returned no JSON at all, and the judge had no retry, 
 answer, raising its token budget, retrying once, and recording the raw response
 when parsing still fails.
 
+### 4.7 Fourth full evaluation run
+
+Recall, precision, faithfulness, answer relevance, semantic accuracy, diagram
+linkage and robustness all reached 1.000, and relevance rose to 0.702. Two
+problems remained.
+
+7. **26 of 30 judge calls returned an empty completion.** The four scores that
+   did land were all 1.000, which made the generation metrics look perfect while
+   resting on a sample of four. Running the same gradings at lower concurrency
+   returned content every time, so the endpoint was shedding load rather than
+   refusing the prompt. Reduced the evaluation to two workers and gave both the
+   judge and the query router three attempts with backoff. Both now record the
+   raw response when they still fail, so an empty completion can never again be
+   mistaken for a passing score.
+
+8. **Q14 routed to no topic at all.** The word "knapsack" on its own appeared in
+   no topic's keyword list: `fractional_knapsack` held "fractional knapsack" and
+   `knapsack_01` held "0/1 knapsack", so a question phrased as "the knapsack
+   problem ... items cannot be broken" matched nothing. Added the bare term to
+   both topics, which deliberately leaves them tied, plus the phrases that
+   actually separate them ("cannot be broken", "taken whole" against "can be
+   broken", "fraction of an item").
+
+### 4.8 Hardening the offline path
+
+`tests/test_retrieve.py` exercises the deterministic keyword router with the
+model switched off. It initially failed three checks, each a genuine weakness
+rather than an unfair test:
+
+- "Which dynamic programming algorithm finds the best order to multiply a chain
+  of matrices" tied at one keyword each between `dp_principles` and
+  `matrix_chain`, and the tie broke on declaration order. Promoted "chain of
+  matrices" to a strong keyword and added the phrasings around it.
+- The CAP theorem query still escaped the out-of-scope gate without the model,
+  because the gate only fired when the topic was null, and the weak
+  `sorting_comparison` match was not null. The gate now also fires on a topic
+  held with low confidence.
+
+All eight retrieval checks and all nine solver checks now pass with no API key.
+
+### 4.9 Report structure
+
+The generated answers carry their own `##` headings. Inserted verbatim into the
+numerical demonstration section they registered as top-level report sections and
+broke the document outline. Embedded answers are now demoted four heading levels.
+
 ---
 
 ## 5. Commands

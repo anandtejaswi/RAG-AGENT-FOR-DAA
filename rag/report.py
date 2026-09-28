@@ -43,6 +43,18 @@ LABELS = {
 }
 
 
+HEADING_RE = __import__("re").compile(r"^(#{1,4})\s", __import__("re").M)
+
+
+def demote(markdown: str, levels: int = 4) -> str:
+    """Push an embedded answer's headings below the report's own sections.
+
+    Generated answers use their own '##' headings. Inserted verbatim they would
+    appear as top-level report sections and break the document outline.
+    """
+    return HEADING_RE.sub(lambda m: "#" * min(6, len(m.group(1)) + levels) + " ", markdown)
+
+
 def fence(text: str, lang: str = "text") -> str:
     return f"```{lang}\n{text.rstrip()}\n```"
 
@@ -206,7 +218,7 @@ walkthroughs below are taken verbatim from the evaluation run.
             if keys:
                 parts.append(fence("\n".join(f"{k} = {res[k]}" for k in keys)))
         parts.append("**Generated answer:**\n")
-        parts.append(rec["answer"] or "_no answer produced_")
+        parts.append(demote(rec["answer"]) if rec["answer"] else "_no answer produced_")
         parts.append(f"\n**Verification:** expected "
                      f"`{json.dumps(case['expected_numeric'])}`; "
                      f"{met.get('numeric_note', 'n/a')}. "
