@@ -229,11 +229,16 @@
             "value/weight ratio",
             "fraction of item",
             "greedy knapsack",
-            "continuous knapsack"
+            "continuous knapsack",
+            "knapsack",
+            "can be broken",
+            "broken into fraction",
+            "part of an item"
           ],
           "strong": [
             "fractional knapsack",
-            "value per weight ratio"
+            "value per weight ratio",
+            "fraction of an item"
           ]
         },
         {
@@ -375,11 +380,15 @@
             "m table",
             "s table",
             "chain of matrices",
-            "optimal parenthesization"
+            "optimal parenthesization",
+            "order to multiply",
+            "multiply a chain",
+            "chain multiplication"
           ],
           "strong": [
             "matrix chain multiplication",
-            "optimal parenthesization"
+            "optimal parenthesization",
+            "chain of matrices"
           ]
         },
         {
@@ -409,11 +418,18 @@
             "item cannot be broken",
             "include or exclude",
             "dp knapsack",
-            "integer knapsack"
+            "integer knapsack",
+            "knapsack",
+            "cannot be broken",
+            "taken whole",
+            "either taken",
+            "whole item",
+            "indivisible"
           ],
           "strong": [
             "0/1 knapsack",
-            "knapsack dp table"
+            "knapsack dp table",
+            "items cannot be broken"
           ]
         },
         {
@@ -432,7 +448,9 @@
           "strong": [
             "floyd-warshall",
             "all pairs shortest path",
-            "transitive closure"
+            "transitive closure",
+            "between every pair of vertices",
+            "every pair of vertices"
           ]
         },
         {

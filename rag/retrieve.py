@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -190,15 +191,23 @@ def llm_classify(query: str) -> dict | None:
     topics = topic_table(load_syllabus())
     listing = "\n".join(f"{t['unit']} | {t['topic']} | {t['title']}" for t in topics)
     prompt = CLASSIFY_PROMPT.format(topics=listing, query=query)
-    try:
-        resp = chat_model(temperature=0.0, max_tokens=300).invoke(prompt)
-        text = resp.content if isinstance(resp.content, str) else str(resp.content)
-        match = re.search(r"\{.*\}", text, re.S)
-        if not match:
-            return None
-        data = json.loads(match.group(0))
-    except Exception as exc:  # network, quota, malformed output
-        return {"error": str(exc)[:200]}
+    data = None
+    last = ""
+    for attempt in range(3):
+        try:
+            if attempt:
+                time.sleep(1.5 * attempt)
+            resp = chat_model(temperature=0.0, max_tokens=400).invoke(prompt)
+            text = resp.content if isinstance(resp.content, str) else str(resp.content)
+            last = text
+            match = re.search(r"\{.*\}", text, re.S)
+            if match:
+                data = json.loads(match.group(0))
+                break
+        except Exception as exc:  # network, quota, malformed output
+            last = f"{type(exc).__name__}: {exc}"
+    if data is None:
+        return {"error": f"router returned no JSON; last response: {last[:120]!r}"}
 
     valid = {t["topic"]: t["unit"] for t in topics}
     topic = data.get("topic")
@@ -396,10 +405,16 @@ def retrieve(query: str, use_llm: bool = True, top_k: int = TOP_K) -> dict:
     reason = None
     if max_dense < OOS_DENSE_FLOOR:
         refuse, reason = True, f"best passage similarity {max_dense:.2f} below floor {OOS_DENSE_FLOOR}"
-    elif classification.get("topic") is None and max_dense < OOS_DENSE_UNCLASSIFIED:
+    elif max_dense < OOS_DENSE_UNCLASSIFIED and (
+        classification.get("topic") is None
+        or float(classification.get("confidence") or 0.0) < TOPIC_FILTER_CONFIDENCE
+    ):
+        which = ("did not map to any syllabus topic" if classification.get("topic") is None
+                 else f"mapped only weakly to {classification['topic']} "
+                      f"(confidence {classification['confidence']})")
         refuse, reason = True, (
-            f"query did not map to any syllabus topic and best similarity "
-            f"{max_dense:.2f} is below {OOS_DENSE_UNCLASSIFIED}"
+            f"query {which} and best similarity {max_dense:.2f} is below "
+            f"{OOS_DENSE_UNCLASSIFIED}"
         )
 
     diagrams = find_diagrams(query, classification) if classification.get("needs_diagram") else []
