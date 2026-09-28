@@ -1,0 +1,580 @@
+{
+  "subject": "Design and Analysis of Algorithms",
+  "codes": [
+    "KCS-503",
+    "BCS-503",
+    "NCS-501"
+  ],
+  "university": "AKTU (Dr. A.P.J. Abdul Kalam Technical University)",
+  "units": [
+    {
+      "unit": 1,
+      "name": "Introduction and Asymptotic Analysis",
+      "topics": [
+        {
+          "topic": "asymptotic_notation",
+          "title": "Growth of functions and asymptotic notation",
+          "keywords": [
+            "big-o",
+            "big o",
+            "omega",
+            "theta",
+            "asymptotic",
+            "growth of function",
+            "upper bound",
+            "lower bound",
+            "tight bound",
+            "little o",
+            "c and n0",
+            "worst case",
+            "best case"
+          ],
+          "strong": [
+            "asymptotic notation",
+            "big-o notation",
+            "omega notation",
+            "theta notation"
+          ]
+        },
+        {
+          "topic": "recurrences",
+          "title": "Recurrence relations, Master Theorem, recursion tree, substitution",
+          "keywords": [
+            "recurrence",
+            "master theorem",
+            "recursion tree",
+            "substitution method",
+            "t(n)",
+            "solve the recurrence",
+            "induction",
+            "master method"
+          ],
+          "strong": [
+            "master theorem",
+            "recursion tree method",
+            "substitution method",
+            "recurrence relation"
+          ]
+        },
+        {
+          "topic": "sorting_comparison",
+          "title": "Shell sort, quick sort, merge sort, heap sort and their comparison",
+          "keywords": [
+            "merge sort",
+            "quick sort",
+            "heap sort",
+            "shell sort",
+            "pivot",
+            "partition",
+            "heapify",
+            "comparison of sorting",
+            "in-place",
+            "stable sort",
+            "sorting algorithm",
+            "sorting algorithms",
+            "sorting"
+          ],
+          "strong": [
+            "merge sort",
+            "quick sort",
+            "heap sort",
+            "shell sort"
+          ]
+        },
+        {
+          "topic": "linear_time_sorting",
+          "title": "Sorting in linear time and order statistics",
+          "keywords": [
+            "counting sort",
+            "radix sort",
+            "bucket sort",
+            "linear time sorting",
+            "order statistic",
+            "median selection",
+            "decision tree lower bound"
+          ],
+          "strong": [
+            "counting sort",
+            "radix sort",
+            "bucket sort",
+            "sorting in linear time"
+          ]
+        }
+      ]
+    },
+    {
+      "unit": 2,
+      "name": "Advanced Data Structures",
+      "topics": [
+        {
+          "topic": "red_black_trees",
+          "title": "Red-Black trees and rebalancing",
+          "keywords": [
+            "red-black",
+            "red black tree",
+            "recoloring",
+            "black height",
+            "rb tree",
+            "rotation",
+            "rebalancing",
+            "avl",
+            "balance factor"
+          ],
+          "strong": [
+            "red-black tree",
+            "black height",
+            "recoloring"
+          ]
+        },
+        {
+          "topic": "b_trees",
+          "title": "B-Trees",
+          "keywords": [
+            "b-tree",
+            "b tree",
+            "minimum degree",
+            "split child",
+            "disk block",
+            "order of b-tree",
+            "node split"
+          ],
+          "strong": [
+            "b-tree",
+            "minimum degree t"
+          ]
+        },
+        {
+          "topic": "binomial_fibonacci_heaps",
+          "title": "Binomial heaps and Fibonacci heaps",
+          "keywords": [
+            "binomial heap",
+            "fibonacci heap",
+            "amortized",
+            "decrease key",
+            "union of heaps",
+            "binomial tree",
+            "cascading cut",
+            "mergeable heap"
+          ],
+          "strong": [
+            "binomial heap",
+            "fibonacci heap",
+            "cascading cut"
+          ]
+        },
+        {
+          "topic": "tries_skip_lists",
+          "title": "Tries and skip lists",
+          "keywords": [
+            "trie",
+            "prefix tree",
+            "skip list",
+            "probabilistic data structure",
+            "express lane",
+            "level promotion",
+            "retrieval tree"
+          ],
+          "strong": [
+            "trie",
+            "skip list"
+          ]
+        }
+      ]
+    },
+    {
+      "unit": 3,
+      "name": "Divide and Conquer, Greedy Methods",
+      "topics": [
+        {
+          "topic": "divide_and_conquer",
+          "title": "Divide and conquer paradigm, matrix multiplication, convex hull, binary search",
+          "keywords": [
+            "divide and conquer",
+            "strassen",
+            "matrix multiplication",
+            "convex hull",
+            "binary search",
+            "combine step",
+            "conquer step"
+          ],
+          "strong": [
+            "divide and conquer",
+            "strassen",
+            "convex hull"
+          ]
+        },
+        {
+          "topic": "greedy_general",
+          "title": "Greedy method, optimal substructure and greedy choice property",
+          "keywords": [
+            "greedy",
+            "greedy choice property",
+            "optimal substructure",
+            "locally optimal",
+            "activity selection",
+            "optimal reliability allocation"
+          ],
+          "strong": [
+            "greedy choice property",
+            "activity selection",
+            "optimal reliability allocation"
+          ]
+        },
+        {
+          "topic": "fractional_knapsack",
+          "title": "Fractional knapsack solved by the greedy method",
+          "keywords": [
+            "fractional knapsack",
+            "value per weight",
+            "value/weight ratio",
+            "fraction of item",
+            "greedy knapsack",
+            "continuous knapsack"
+          ],
+          "strong": [
+            "fractional knapsack",
+            "value per weight ratio"
+          ]
+        },
+        {
+          "topic": "job_sequencing",
+          "title": "Job sequencing with deadlines",
+          "keywords": [
+            "job sequencing",
+            "deadline",
+            "profit",
+            "schedule jobs",
+            "slot"
+          ],
+          "strong": [
+            "job sequencing with deadlines"
+          ]
+        },
+        {
+          "topic": "huffman_coding",
+          "title": "Huffman coding",
+          "keywords": [
+            "huffman",
+            "prefix code",
+            "frequency",
+            "codeword",
+            "variable length code",
+            "encoding tree"
+          ],
+          "strong": [
+            "huffman coding",
+            "prefix code"
+          ]
+        },
+        {
+          "topic": "mst",
+          "title": "Minimum spanning trees: Prim's and Kruskal's algorithms",
+          "keywords": [
+            "minimum spanning tree",
+            "mst",
+            "prim",
+            "kruskal",
+            "spanning tree",
+            "disjoint set",
+            "cut property",
+            "safe edge",
+            "cycle detection"
+          ],
+          "strong": [
+            "minimum spanning tree",
+            "prim's algorithm",
+            "kruskal's algorithm"
+          ]
+        },
+        {
+          "topic": "graph_traversal",
+          "title": "Graph traversals: BFS and DFS",
+          "keywords": [
+            "bfs",
+            "dfs",
+            "breadth-first",
+            "depth-first",
+            "traversal",
+            "queue",
+            "stack",
+            "topological sort",
+            "adjacency list"
+          ],
+          "strong": [
+            "breadth-first search",
+            "depth-first search",
+            "graph traversal"
+          ]
+        },
+        {
+          "topic": "dijkstra",
+          "title": "Dijkstra's single source shortest path algorithm",
+          "keywords": [
+            "dijkstra",
+            "single source shortest path",
+            "non-negative weight",
+            "priority queue",
+            "extract-min",
+            "relaxation",
+            "relax",
+            "greedy shortest path"
+          ],
+          "strong": [
+            "dijkstra"
+          ]
+        },
+        {
+          "topic": "bellman_ford",
+          "title": "Bellman-Ford shortest path algorithm with negative edges",
+          "keywords": [
+            "bellman-ford",
+            "bellman ford",
+            "negative weight",
+            "negative cycle",
+            "v-1 passes",
+            "relaxation",
+            "relax",
+            "edge relaxation"
+          ],
+          "strong": [
+            "bellman-ford",
+            "negative weight cycle"
+          ]
+        }
+      ]
+    },
+    {
+      "unit": 4,
+      "name": "Dynamic Programming, Backtracking and Branch and Bound",
+      "topics": [
+        {
+          "topic": "dp_principles",
+          "title": "Dynamic programming principles, overlapping subproblems, memoization",
+          "keywords": [
+            "dynamic programming",
+            "overlapping subproblem",
+            "optimal substructure",
+            "memoization",
+            "tabulation",
+            "bottom-up",
+            "top-down"
+          ],
+          "strong": [
+            "overlapping subproblems",
+            "memoization",
+            "tabulation"
+          ]
+        },
+        {
+          "topic": "matrix_chain",
+          "title": "Matrix chain multiplication",
+          "keywords": [
+            "matrix chain",
+            "parenthesization",
+            "scalar multiplication",
+            "m table",
+            "s table",
+            "chain of matrices",
+            "optimal parenthesization"
+          ],
+          "strong": [
+            "matrix chain multiplication",
+            "optimal parenthesization"
+          ]
+        },
+        {
+          "topic": "lcs",
+          "title": "Longest common subsequence",
+          "keywords": [
+            "lcs",
+            "longest common subsequence",
+            "subsequence",
+            "direction arrow",
+            "diagonal arrow",
+            "c table",
+            "backtrack the table"
+          ],
+          "strong": [
+            "longest common subsequence",
+            "lcs"
+          ]
+        },
+        {
+          "topic": "knapsack_01",
+          "title": "0/1 knapsack solved by dynamic programming",
+          "keywords": [
+            "0/1 knapsack",
+            "01 knapsack",
+            "knapsack table",
+            "item cannot be broken",
+            "include or exclude",
+            "dp knapsack",
+            "integer knapsack"
+          ],
+          "strong": [
+            "0/1 knapsack",
+            "knapsack dp table"
+          ]
+        },
+        {
+          "topic": "floyd_warshall",
+          "title": "All pairs shortest paths: Floyd-Warshall and Warshall's algorithms",
+          "keywords": [
+            "floyd",
+            "warshall",
+            "all pair shortest path",
+            "all pairs",
+            "distance matrix",
+            "intermediate vertex",
+            "transitive closure",
+            "d matrix"
+          ],
+          "strong": [
+            "floyd-warshall",
+            "all pairs shortest path",
+            "transitive closure"
+          ]
+        },
+        {
+          "topic": "backtracking",
+          "title": "Backtracking: n-Queens, graph colouring, sum of subsets, Hamiltonian cycles",
+          "keywords": [
+            "backtracking",
+            "n-queen",
+            "n queens",
+            "graph coloring",
+            "graph colouring",
+            "sum of subsets",
+            "hamiltonian cycle",
+            "state space tree",
+            "bounding function",
+            "pruning"
+          ],
+          "strong": [
+            "backtracking",
+            "n-queens",
+            "state space tree"
+          ]
+        },
+        {
+          "topic": "branch_and_bound",
+          "title": "Branch and bound, travelling salesman problem",
+          "keywords": [
+            "branch and bound",
+            "travelling salesman",
+            "traveling salesman",
+            "tsp",
+            "lower bound",
+            "reduced cost matrix",
+            "live node",
+            "e-node",
+            "least cost search"
+          ],
+          "strong": [
+            "branch and bound",
+            "travelling salesman problem",
+            "reduced cost matrix"
+          ]
+        }
+      ]
+    },
+    {
+      "unit": 5,
+      "name": "Selected Topics",
+      "topics": [
+        {
+          "topic": "string_matching",
+          "title": "String matching: naive, Rabin-Karp, KMP",
+          "keywords": [
+            "string matching",
+            "pattern matching",
+            "rabin-karp",
+            "kmp",
+            "prefix function",
+            "rolling hash",
+            "spurious hit",
+            "failure function",
+            "naive matcher"
+          ],
+          "strong": [
+            "rabin-karp",
+            "knuth-morris-pratt",
+            "string matching"
+          ]
+        },
+        {
+          "topic": "np_completeness",
+          "title": "P, NP, NP-hard, NP-complete and reductions",
+          "keywords": [
+            "np-complete",
+            "np complete",
+            "np-hard",
+            "polynomial time",
+            "reduction",
+            "sat",
+            "cook",
+            "class p",
+            "class np",
+            "verifier",
+            "intractable"
+          ],
+          "strong": [
+            "np-completeness",
+            "np-hard",
+            "polynomial time reduction"
+          ]
+        },
+        {
+          "topic": "approximation_algorithms",
+          "title": "Approximation algorithms and approximation ratio",
+          "keywords": [
+            "approximation",
+            "approximation ratio",
+            "vertex cover approximation",
+            "2-approximation",
+            "near optimal",
+            "performance ratio"
+          ],
+          "strong": [
+            "approximation algorithm",
+            "approximation ratio"
+          ]
+        },
+        {
+          "topic": "randomized_algorithms",
+          "title": "Randomized algorithms, Las Vegas and Monte Carlo",
+          "keywords": [
+            "randomized",
+            "las vegas",
+            "monte carlo",
+            "expected running time",
+            "random pivot",
+            "probabilistic algorithm"
+          ],
+          "strong": [
+            "randomized algorithm",
+            "las vegas",
+            "monte carlo"
+          ]
+        },
+        {
+          "topic": "fft_algebraic",
+          "title": "Algebraic computation and the Fast Fourier Transform",
+          "keywords": [
+            "fast fourier transform",
+            "fft",
+            "dft",
+            "root of unity",
+            "polynomial multiplication",
+            "algebraic computation",
+            "butterfly"
+          ],
+          "strong": [
+            "fast fourier transform",
+            "discrete fourier transform"
+          ]
+        }
+      ]
+    }
+  ]
+}
