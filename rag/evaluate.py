@@ -285,10 +285,10 @@ def main(only: str | None = None) -> None:
     print(f"running {len(cases)} queries against {model_label()} with {WORKERS} workers")
 
     started = time.time()
-    rows: list[dict] = []
+    evaluated_rows: list[dict] = []
     with ThreadPoolExecutor(max_workers=WORKERS) as pool:
         for row in pool.map(run_case, cases):
-            rows.append(row)
+            evaluated_rows.append(row)
             met = row["metrics"]
             flag = "ok "
             if row["record"].get("error"):
@@ -298,6 +298,18 @@ def main(only: str | None = None) -> None:
                 flag = "MISS"
             print(f"  {flag:4s} {row['case']['id']} {row['case']['category']:14s} "
                   f"{row['case']['query'][:58]}")
+
+    if only and RESULTS.exists():
+        try:
+            existing = json.loads(RESULTS.read_text())
+            existing_rows = {r["case"]["id"]: r for r in existing.get("rows", [])}
+        except Exception:
+            existing_rows = {}
+        for r in evaluated_rows:
+            existing_rows[r["case"]["id"]] = r
+        rows = list(existing_rows.values())
+    else:
+        rows = evaluated_rows
 
     rows.sort(key=lambda r: r["case"]["id"])
     out = {
