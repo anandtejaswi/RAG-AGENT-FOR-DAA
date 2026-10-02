@@ -110,7 +110,7 @@ strictly delegated to exact deterministic Python solvers.
 │             (Vite + TypeScript + Tailwind CSS @ localhost:5173)        │
 │                                                                        │
 │   • Streaming chat interface with step-by-step markdown rendering      │
-│   • Live Retrieval & Solver Telemetry side-panel                       │
+│   • Live Retrieval, Topic Routing & Solver Telemetry side-panel        │
 │   • Persistent Diagram & Schematic Asset Registry browser (21 assets)  │
 └───────────────────────────────────┬────────────────────────────────────┘
                                     │ SSE / REST Stream
@@ -127,22 +127,27 @@ strictly delegated to exact deterministic Python solvers.
                                     │
                                     ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│                 Two-Step RAG Retrieval & Ingestion Pipeline            │
+│                      Two-Stage Retrieval & Routing Pipeline            │
 │                                                                        │
-│   PDF / Text Corpus                                                    │
-│     -> Structural heading extraction & TOC duplication resolution      │
-│     -> Unnumbered sub-heading boundary splitting (e.g. MST, Sorts)     │
-│     -> LangChain RecursiveCharacterTextSplitter (900 chars, 150 ovlp)  │
-│     -> Syllabus semantic tagging & Bayesian section-prior smoothing    │
-│     -> Dense embeddings ({EMBED_MODEL}) + BM25 sparse index            │
-│   Query Execution                                                      │
-│     -> Topic routing (LLM router + deterministic regex classifier)     │
-│     -> Dual hybrid retrieval: Dense top-20 + BM25 top-20               │
-│     -> Reciprocal Rank Fusion (RRF, k=60) + Topic Priority Ranking     │
-│     -> Out-of-scope similarity gating (floor: 0.45 / 0.58)             │
-│     -> Diagram catalog resolution + In-context grounding assembly      │
-│     -> LangChain Deep Agent (+ 9 Deterministic Python Solvers)         │
-│     -> LangSmith Tracing & Observability telemetry                     │
+│   1. Corpus Ingestion & Chunking Index                                 │
+│      -> Structural heading extraction & TOC duplication resolution     │
+│      -> Unnumbered sub-heading boundary splitting (e.g. MST, Sorts)    │
+│      -> LangChain RecursiveCharacterTextSplitter (900 chars, 150 ovlp) │
+│      -> Syllabus semantic tagging & Bayesian section-prior smoothing   │
+│      -> Dense embeddings ({EMBED_MODEL}) + BM25 sparse index           │
+│                                                                        │
+│   2. Dual-Engine Topic Classification & Intent Routing                 │
+│      ├─ Engine A: LLM Structured Router (GLM-5.3-flash, low reasoning) │
+│      ├─ Engine B: Lexical Regex Classifier (Word-boundary & priors)    │
+│      └─ Intent: Target Unit/Topic, Confidence, Solver Task, Diagram Req│
+│                                                                        │
+│   3. Hybrid Retrieval & Gated Agent Generation                         │
+│      -> Dual hybrid retrieval: Dense top-20 + BM25 top-20              │
+│      -> Reciprocal Rank Fusion (RRF, k=60) + Topic Priority Ranking    │
+│      -> Out-of-scope similarity gating (floor: 0.45 / 0.58)            │
+│      -> In-context grounding assembly + Diagram catalog linkage        │
+│      -> LangChain Deep Agent (+ 9 Deterministic Python Solvers)        │
+│      -> LangSmith Tracing & Observability telemetry                    │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -171,73 +176,68 @@ To achieve complete syllabus fidelity without contextual drift, corpus construct
    - **Section Prior Smoothing:** When a chunk's local keyword score is weak or transiently mentions an adjacent topic (e.g., a Heap section referencing Prim's MST in passing), a Bayesian section-prior margin (`SECTION_PRIOR_MARGIN = 12.0`) guarantees that the topic computed over the entire parent section prevails, preventing localized chunk misclassification.
    - Each chunk is permanently tagged with its unique ID (`[C0001]`), unit number, topic name, source document, section heading, and computed topical confidence score.
 
-### C. GLM-5.3-Flash Chunk Access, Hybrid Retrieval, and End-to-End Query Flow
+### C. Dual-Engine Topic Classification and Disambiguation Architecture
+
+To prevent cross-unit terminology collisions (such as *"relaxation"* appearing in both Unit 3 Dijkstra and Unit 4 Bellman-Ford, or *"knapsack"* spanning Unit 3 Greedy and Unit 4 Dynamic Programming), the system employs a synchronized dual-engine topic classifier:
+
+1. **Deterministic Lexical Classifier (`lexical_classify`):**
+   - Matches query tokens against the 29 syllabus topic dictionaries using word-boundary regular expressions.
+   - Normal keywords contribute 1 point; "strong" disambiguation anchors (e.g., *"negative weight"* $\\rightarrow$ Bellman-Ford) contribute 4 points.
+   - Computes a dynamic confidence score based on the margin over the second-best topic and total keyword evidence:
+     $$\\text{{margin}} = \\frac{{\\text{{score}}_{{\\text{{top}}}} - \\text{{score}}_{{\\text{{runner}}}}}}{{\\text{{score}}_{{\\text{{top}}}}}}, \\quad \\text{{evidence}} = \\min\\left(1.0, \\frac{{\\text{{score}}_{{\\text{{top}}}}}}{{4.0}}\\right)$$
+     $$\\text{{Confidence}}_{{\\text{{lexical}}}} = \\min\\left(0.95, (0.45 + 0.5 \\times \\text{{margin}}) \\times \\text{{evidence}}\\right)$$
+   - Queries with balanced keyword collisions or isolated weak keywords receive low confidence, preventing false triggers.
+
+2. **LLM Structured Classifier (`llm_classify`):**
+   - Dispatches a prompt containing the 29-topic syllabus catalog to GLM-5.3-flash with `reasoning_effort="low"` to strictly return a schema-validated JSON payload:
+     `{{"topic": "<topic_id or null>", "confidence": <0..1>, "needs_diagram": <bool>, "numeric_task": "<solver_name or null>"}}`
+   - Leverages full semantic reasoning to resolve ambiguous student formulations where keywords overlap multiple units.
+
+3. **Classification Agreement and Fusion (`classify`):**
+   - When both engines agree on the target topic, confidence is boosted:
+     $$\\text{{Confidence}} = \\min(0.99, \\max(\\text{{Confidence}}_{{\\text{{llm}}}}, \\text{{Confidence}}_{{\\text{{lexical}}}}, 0.8))$$
+     with telemetry source tagged as `"llm+lexical"`.
+   - When the LLM resolves a valid syllabus topic where lexical keywords are ambiguous, the LLM classification takes precedence with source `"llm"`.
+   - When neither engine identifies a syllabus match, confidence is set to $0.0$, routing the query toward the out-of-scope similarity gate.
+
+4. **Intent & Tool Task Routing:**
+   - **Numerical Task Detection:** Scans for computation intent markers (`COMPUTE_INTENT`: *"solve"*, *"calculate"*, *"trace"*, *"step by step"*) combined with numeric data or specific solver hints (`NUMERIC_HINTS`) to automatically bind one of the 9 deterministic Python solvers (e.g., `knapsack_01`, `floyd_warshall`, `master_theorem`).
+   - **Diagram Intent Detection:** Scans for visual phrasing (`DIAGRAM_HINTS`: *"diagram"*, *"draw"*, *"figure"*, *"tree"*, *"stages"*) or model intent to inject eligible schematic identifiers.
+
+### D. GLM-5.3-Flash Chunk Access, Hybrid Retrieval, and End-to-End Query Flow
 
 When a student submits a query, the system orchestrates chunk retrieval and model grounding through an 8-stage deterministic execution flow:
 
-1. **Query Ingestion & Dual Topic Routing:**
-   - The user query is classified through a dual-routing mechanism: an LLM-based structured classifier (GLM-5.3-flash with `reasoning_effort="low"`) corroborated by a deterministic word-boundary keyword classifier.
-   - The classifier determines the target syllabus Unit, specific Topic, routing confidence, and flags any required deterministic numerical solver task (e.g., `knapsack_01`, `floyd_warshall`, `master_theorem`).
-
+1. **Query Ingestion & Dual Topic Routing:** The query is processed by the dual-engine classifier detailed above, determining target Unit, Topic, confidence, and solver bindings.
 2. **Dual-Stream Hybrid Retrieval (Dense + Sparse):**
-   - **Dense Semantic Stream:** The query is prepended with the instruction prefix `"Represent this sentence for searching relevant passages: "` and embedded into a 768-dimensional normalized vector using `{EMBED_MODEL}`. Cosine similarity is computed against all {answerable} answerable chunk vectors.
-   - **Sparse Lexical Stream:** Query tokens are evaluated against the inverted BM25 index (`BM25Okapi`) built over the concatenation of each chunk's section heading and body text.
-   - Top-20 candidate chunks are retrieved independently from each retrieval stream.
+   - **Dense Semantic Stream:** Query is prepended with `"Represent this sentence for searching relevant passages: "` and embedded with `{EMBED_MODEL}` into a 768-dimensional normalized vector. Cosine similarity is computed against all {answerable} answerable chunk vectors.
+   - **Sparse Lexical Stream:** Query tokens are evaluated against the inverted `BM25Okapi` index over chunk headings and body text.
+   - Top-20 candidates are retrieved independently from each stream.
+3. **Reciprocal Rank Fusion (RRF):** Rankings are merged into a unified candidate pool using:
+   `RRF(d) = sum_{{m in [dense, bm25]}} 1 / (60 + r_m(d))`
+   where `r_m(d)` represents the 1-indexed rank of chunk `d` in retrieval stream `m`.
+4. **Topic Priority Re-ranking & Adaptive Context Sizing:** When topic confidence $\\ge 0.7$, matching syllabus topic chunks receive a $1.5\\times$ priority boost to lead the context window. Adaptive backfilling retrieves general passages only as needed to maintain a 3-chunk minimum context depth.
+5. **Out-of-Scope Similarity Floor Gating:** Cosine similarity floors ($0.45$ for topic-classified queries, $0.58$ for unclassified queries) deterministically intercept off-syllabus queries and issue formal syllabus refusals without consuming generation tokens.
+6. **Dynamic In-Context Grounding Formulation:** Top-$k$ chunks are formatted into an explicit grounding block with chunk IDs (`[C0042]`), metadata, eligible diagram IDs, and numerical solver directives.
+7. **LangChain Deep Agent Execution & Solver Delegation:** GLM-5.3-flash operates under zero-arithmetic guardrails, invoking deterministic Python solvers for exact step-by-step tables and recurrence evaluations.
+8. **Post-Generation Diagram Verification & Streaming:** A post-processing regex pass verifies and strips unoffered diagram references before streaming response markdown to `assistant-ui` over SSE.
 
-3. **Reciprocal Rank Fusion (RRF):**
-   - The dense and sparse rankings are merged into a unified candidate pool using Reciprocal Rank Fusion:
-     `RRF(d) = sum_{{m in [dense, bm25]}} 1 / (60 + r_m(d))`
-     where `r_m(d)` represents the 1-indexed rank of chunk `d` in retrieval stream `m`.
-
-4. **Topic Priority Re-ranking & Adaptive Context Sizing:**
-   - When the classifier confidence satisfies $\\ge 0.7$, chunks whose pre-computed syllabus topic matches the predicted topic receive a $1.5\\times$ priority boost.
-   - On-topic chunks are placed at the head of the context window. Adaptive backfilling retrieves top-ranked general passages only as necessary to guarantee a minimum context depth of 3 chunks (`MIN_CONTEXT_CHUNKS = 3`), ensuring both high topical precision and adequate contextual breadth.
-
-5. **Out-of-Scope Similarity Floor Gating:**
-   - Prior to agent invocation, retrieval confidence is validated against calibrated cosine similarity floors: $0.45$ for queries with high-confidence topic matches and $0.58$ for unclassified queries.
-   - Queries falling below these thresholds are deterministically intercepted and issued formal syllabus refusal messages without consuming generation tokens or risking ungrounded hallucinations.
-
-6. **Dynamic In-Context Grounding Formulation:**
-   - The top-$k$ retrieved chunks are formatted into an explicit grounding block injected directly into the user message:
-     ```text
-     CONTEXT
-     [C0042] (unit 3, topic dynamic_programming, source notes_supplement.md, section 4.3 0/1 Knapsack Problem)
-     [Text of chunk...]
-
-     DIAGRAMS available for this answer:
-       DIAG_DAA_U3_KNAPSACK_01 - 0/1 Knapsack Dynamic Programming: DP table construction matrix
-
-     This question requires an exact computation. Call the `knapsack_01` tool with the values from the question and reproduce its output.
-     ```
-
-7. **LangChain Deep Agent Execution & Solver Delegation:**
-   - The prompt is dispatched to GLM-5.3-flash under strict examiner grounding rules:
-     - All factual claims must carry inline chunk citations (`[C0042]`).
-     - Internal mental arithmetic is strictly prohibited; any numerical derivation, recurrence expansion, or matrix traversal triggers a programmatic tool call to one of 9 deterministic Python solvers.
-     - The solver returns exact step-by-step arithmetic matrices, which the model formats faithfully into markdown tables without rounding or truncation.
-     - OpenRouter reasoning parameters (`reasoning_effort="low"`) ensure token budgets are preserved for complete mathematical derivations rather than exhausted in hidden reasoning loops.
-
-8. **Post-Generation Diagram Verification & Streaming:**
-   - A deterministic post-processing regex pass scans the generated response for `[Diagram: DIAG_...]` identifiers, verifying them against the candidate list offered in the context. Any unauthorized or hallucinated diagram IDs are stripped.
-   - The verified response, along with tool telemetry, chunk provenance, and diagram metadata, is streamed back to the `assistant-ui` frontend over Server-Sent Events (SSE).
-
-### D. Context Management, Thread State, and LangSmith Observability
-
-The architecture maintains strict separation between transient grounding windows and persisted conversational thread state, while providing end-to-end telemetry:
+### E. Context Management, Thread State, and LangSmith Observability
 
 1. **Per-Turn Grounding Window:** The model receives only the verified grounding context for the active query, preventing multi-turn context drift and token window degradation.
 2. **Thread State Persistence:** The server records complete turn telemetry: classified topic, routing source, full chunk payloads with dense/BM25/RRF scores, executed tool names and argument payloads, emitted diagram IDs, and execution latency.
 3. **LangChain / LangSmith Tracing Telemetry:** The pipeline natively integrates LangChain Tracing V2 (`LANGCHAIN_TRACING_V2=true`). Every retrieval step, LLM completion, tool invocation, and agent trajectory is automatically traced and logged to LangSmith under the `rag-aktu` project for granular latency profiling, token accounting, and live auditability.
 
-### E. Syllabus Coverage and Authored Supplement
+### F. Syllabus Coverage and Authored Supplement
 
 The knowledge base covers all {n_topics} syllabus topics across the 5 units of AKTU KCS-503. Topics omitted from the primary notes (LCS detail, Floyd-Warshall, backtracking, branch & bound, tries, skip lists, linear time sorting, randomized algorithms, FFT, job sequencing) are authored in `notes_supplement.md` and explicitly cited.
 
-### F. Generation Model and Environment Configuration
+### G. Generation Model and Environment Configuration
 
 - **Generation Model:** {data['model']}.
 - **Embedding Model:** `{EMBED_MODEL}` (768 dimensions, normalized).
 - **Hybrid Fusion:** Dense (Cosine) + Sparse (BM25Okapi), fused via RRF ($k=60$).
+- **Classifier Engines:** GLM-5.3-flash structured router + Regex lexical scorer.
 - **Tool Suite:** 9 Deterministic Python Solvers (`rag.solvers`).
 - **Observability:** LangSmith Tracing V2 + FastAPI SSE Streaming.
 """
