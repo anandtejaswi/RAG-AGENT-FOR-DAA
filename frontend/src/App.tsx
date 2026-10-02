@@ -51,7 +51,7 @@ export const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-zinc-950 text-zinc-100 antialiased font-sans">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-white text-zinc-900 antialiased font-sans">
       <Navbar
         serverOnline={serverOnline}
         modelLabel={modelLabel}
@@ -61,7 +61,7 @@ export const App: React.FC = () => {
 
       <div className="flex-1 flex overflow-hidden relative">
         {/* Chat Area */}
-        <main className="flex-1 h-full overflow-hidden flex flex-col">
+        <main className="flex-1 h-full overflow-hidden flex flex-col bg-white">
           <AssistantChat
             onMetadataChange={(meta) => setActiveMetadata(meta)}
             onTopicDetected={(topic) => setActiveTopic(topic || null)}
@@ -71,7 +71,7 @@ export const App: React.FC = () => {
         {/* Toggle Sidebar */}
         <button
           onClick={() => setIsInspectorOpen(!isInspectorOpen)}
-          className="absolute right-3 top-3 z-30 p-1.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-100 transition-colors cursor-pointer"
+          className="absolute right-3 top-3 z-30 p-1.5 rounded bg-white border border-zinc-200 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 transition-colors shadow-xs cursor-pointer"
           title={isInspectorOpen ? 'Hide Telemetry' : 'Show Telemetry'}
         >
           {isInspectorOpen ? <SidebarClose className="h-4 w-4" /> : <SidebarOpen className="h-4 w-4" />}
@@ -79,9 +79,9 @@ export const App: React.FC = () => {
 
         {/* Telemetry Sidebar */}
         {isInspectorOpen && (
-          <aside className="w-72 lg:w-84 border-l border-zinc-800 bg-zinc-900 flex flex-col h-full shrink-0">
-            <div className="px-4 py-2.5 border-b border-zinc-800 flex items-center justify-between text-xs font-mono">
-              <span className="font-semibold text-zinc-300">Telemetry</span>
+          <aside className="w-72 lg:w-84 border-l border-zinc-200 bg-zinc-50 flex flex-col h-full shrink-0">
+            <div className="px-4 py-2.5 border-b border-zinc-200 bg-white flex items-center justify-between text-xs font-mono">
+              <span className="font-semibold text-zinc-900">Telemetry</span>
               <span className="text-[10px] text-zinc-500">Live</span>
             </div>
             <div className="flex-1 overflow-y-auto">

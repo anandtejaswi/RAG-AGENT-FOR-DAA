@@ -8,33 +8,6 @@ interface AssistantChatProps {
   onTopicDetected: (topic?: string | null) => void;
 }
 
-const SAMPLE_PROMPTS = [
-  {
-    title: 'Master Theorem',
-    query: 'Solve the recurrence T(n) = 2T(n/2) + n using the Master Theorem.',
-  },
-  {
-    title: '0/1 Knapsack',
-    query: 'Solve the 0/1 knapsack problem for weights [1, 3, 4, 5], values [1, 4, 5, 7], capacity 7.',
-  },
-  {
-    title: 'LCS Table',
-    query: 'Compute the Longest Common Subsequence of ABCBDAB and BDCABA with directional arrows.',
-  },
-  {
-    title: 'AVL Tree LL Rotation',
-    query: 'Show the rotation that repairs an LL imbalance in an AVL tree and state balance factors.',
-  },
-  {
-    title: 'Dijkstra Trace',
-    query: 'Trace Dijkstra\'s algorithm from source A on the graph {"A": {"B": 4, "C": 2}, "B": {"C": 1, "D": 5}, "C": {"D": 8, "E": 10}, "D": {"E": 2}, "E": {}}',
-  },
-  {
-    title: '4-Queens Backtracking',
-    query: 'Draw the state space tree explored by backtracking for the 4-Queens problem and explain the bounding function.',
-  },
-];
-
 export const AssistantChat: React.FC<AssistantChatProps> = ({
   onMetadataChange,
   onTopicDetected,
@@ -229,36 +202,12 @@ export const AssistantChat: React.FC<AssistantChatProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-zinc-950 text-zinc-100 overflow-hidden relative">
+    <div className="flex flex-col h-full bg-white text-zinc-900 overflow-hidden relative">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 lg:px-8 py-6 space-y-5">
+      <div className="flex-1 overflow-y-auto px-4 lg:px-8 py-6 space-y-4">
         {messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center max-w-xl mx-auto text-center space-y-6">
-            <div>
-              <h2 className="text-base font-semibold font-mono tracking-tight text-zinc-100">
-                Design and Analysis of Algorithms
-              </h2>
-              <p className="text-xs text-zinc-400 mt-1">
-                Enter a question or select an example prompt below.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full text-left">
-              {SAMPLE_PROMPTS.map((prompt, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleSend(prompt.query)}
-                  className="p-3 rounded border border-zinc-800 bg-zinc-900/60 hover:bg-zinc-900 hover:border-zinc-700 transition-colors text-left cursor-pointer"
-                >
-                  <div className="text-xs font-mono font-semibold text-zinc-200">
-                    {prompt.title}
-                  </div>
-                  <div className="text-[11px] text-zinc-400 mt-0.5 line-clamp-2">
-                    {prompt.query}
-                  </div>
-                </button>
-              ))}
-            </div>
+          <div className="h-full flex items-center justify-center text-zinc-400 text-xs font-mono">
+            Type your question below to begin.
           </div>
         ) : (
           messages.map((msg) => (
@@ -272,12 +221,12 @@ export const AssistantChat: React.FC<AssistantChatProps> = ({
               <div
                 className={`rounded px-4 py-3 text-xs leading-relaxed max-w-[90%] ${
                   msg.role === 'user'
-                    ? 'bg-zinc-800 text-zinc-100 border border-zinc-700'
-                    : 'bg-zinc-900/90 text-zinc-200 border border-zinc-800'
+                    ? 'bg-zinc-100 text-zinc-900 border border-zinc-200'
+                    : 'bg-white text-zinc-900 border border-zinc-200 shadow-xs'
                 }`}
               >
                 {msg.role === 'user' ? (
-                  <p className="whitespace-pre-wrap">{msg.content}</p>
+                  <p className="whitespace-pre-wrap font-medium">{msg.content}</p>
                 ) : (
                   <div>
                     {msg.isStreaming && !msg.content ? (
@@ -300,8 +249,8 @@ export const AssistantChat: React.FC<AssistantChatProps> = ({
       </div>
 
       {/* Composer */}
-      <div className="p-4 border-t border-zinc-800 bg-zinc-950">
-        <div className="max-w-3xl mx-auto flex items-center bg-zinc-900 border border-zinc-800 rounded px-3 py-1.5 focus-within:border-zinc-600">
+      <div className="p-4 border-t border-zinc-200 bg-white">
+        <div className="max-w-3xl mx-auto flex items-center bg-zinc-50 border border-zinc-300 rounded px-3 py-1.5 focus-within:border-zinc-900 focus-within:bg-white transition-colors">
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -313,14 +262,14 @@ export const AssistantChat: React.FC<AssistantChatProps> = ({
             }}
             placeholder="Type your question..."
             rows={1}
-            className="w-full bg-transparent text-zinc-100 text-xs placeholder-zinc-500 focus:outline-none resize-none max-h-32 py-1"
+            className="w-full bg-transparent text-zinc-900 text-xs placeholder-zinc-400 focus:outline-none resize-none max-h-32 py-1"
           />
 
           <div className="flex items-center pl-2">
             {isLoading ? (
               <button
                 onClick={handleStop}
-                className="p-1 rounded bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                className="p-1 rounded bg-zinc-200 text-zinc-800 hover:bg-zinc-300 cursor-pointer"
                 title="Stop"
               >
                 <StopCircle className="h-4 w-4" />
@@ -329,7 +278,7 @@ export const AssistantChat: React.FC<AssistantChatProps> = ({
               <button
                 onClick={() => handleSend()}
                 disabled={!input.trim()}
-                className="p-1 rounded bg-zinc-100 disabled:bg-zinc-800 text-zinc-900 disabled:text-zinc-600 cursor-pointer"
+                className="p-1 rounded bg-zinc-900 disabled:bg-zinc-200 text-white disabled:text-zinc-400 cursor-pointer transition-colors"
                 title="Send"
               >
                 <ArrowUp className="h-4 w-4" />
