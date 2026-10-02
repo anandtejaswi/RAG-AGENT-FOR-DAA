@@ -285,9 +285,16 @@ def build_chunks() -> list[Chunk]:
 
 
 def embed_texts(texts: list[str], model=None) -> np.ndarray:
+    import os
+    os.environ.setdefault("HF_HUB_OFFLINE", "1")
+    os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
     from sentence_transformers import SentenceTransformer
 
-    model = model or SentenceTransformer(EMBED_MODEL)
+    if model is None:
+        try:
+            model = SentenceTransformer(EMBED_MODEL, local_files_only=True)
+        except Exception:
+            model = SentenceTransformer(EMBED_MODEL)
     vecs = model.encode(
         texts, batch_size=16, convert_to_numpy=True,
         normalize_embeddings=True, show_progress_bar=True,

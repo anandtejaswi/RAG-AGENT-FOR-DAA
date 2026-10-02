@@ -6,6 +6,8 @@
   python cli.py ask "question"      answer one question
   python cli.py eval [ids|category] run the labelled test set
   python cli.py report              build the PDF evaluation report
+  python cli.py serve [port]        start the FastAPI Agent Server (default: 8000)
+  python cli.py ui [port]           start both Agent Server and assistant-ui Frontend
 """
 
 from __future__ import annotations
@@ -52,6 +54,21 @@ def main(argv: list[str]) -> int:
     elif cmd == "report":
         from rag.report import main as run
         run()
+    elif cmd == "serve":
+        import uvicorn
+        port = int(rest[0]) if rest else 8000
+        print(f"Starting AKTU DAA Agent Server on http://localhost:{port}")
+        uvicorn.run("server:app", host="0.0.0.0", port=port, reload=True)
+    elif cmd == "ui":
+        import subprocess
+        import os
+        port = int(rest[0]) if rest else 8000
+        print(f"Starting Agent Server (port {port}) and assistant-ui Frontend (port 5173)...")
+        server_proc = subprocess.Popen([sys.executable, "cli.py", "serve", str(port)])
+        try:
+            subprocess.run(["npm", "run", "dev"], cwd="frontend", check=True)
+        finally:
+            server_proc.terminate()
     else:
         print(f"unknown command: {cmd}")
         print(__doc__)

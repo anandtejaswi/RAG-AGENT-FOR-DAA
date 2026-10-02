@@ -27,9 +27,11 @@ cp model_details.txt .env          # or write the variables below yourself
 .venv/bin/python cli.py ask "Solve T(n) = 2T(n/2) + n by the Master Theorem"
 .venv/bin/python cli.py eval       # run the 34 labelled test queries (~7 min)
 .venv/bin/python cli.py report     # write out/report.md and out/report.pdf
+.venv/bin/python cli.py serve      # run the FastAPI Agent Server (http://localhost:8000)
+.venv/bin/python cli.py ui         # start Agent Server + assistant-ui Frontend (http://localhost:5173)
 ```
 
-`cli.py ingest` and `cli.py diagrams` need no API key. `ask`, `eval` and the
+`cli.py ingest` and `cli.py diagrams` need no API key. `ask`, `eval`, `serve`, `ui` and the
 report do.
 
 ## Configuration

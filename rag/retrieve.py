@@ -77,9 +77,15 @@ def load_index() -> dict:
 
 @lru_cache(maxsize=1)
 def embedder():
+    import os
+    os.environ.setdefault("HF_HUB_OFFLINE", "1")
+    os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
     from sentence_transformers import SentenceTransformer
 
-    return SentenceTransformer(EMBED_MODEL)
+    try:
+        return SentenceTransformer(EMBED_MODEL, local_files_only=True)
+    except Exception:
+        return SentenceTransformer(EMBED_MODEL)
 
 
 def embed_query(query: str) -> np.ndarray:
