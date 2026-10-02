@@ -94,26 +94,51 @@ def section_architecture(data: dict) -> str:
 
     return f"""## 1. System Architecture Overview
 
-The system is a two-stage retrieval augmented generation pipeline. Retrieval is
-deterministic and runs to completion before any generation, so the passages and
-scores recorded in this report are exactly what the language model received.
-Generation is orchestrated by a LangChain Deep Agent whose only tools are exact
-numeric solvers.
+The system is a two-stage retrieval augmented generation pipeline coupled with a
+self-deployed FastAPI Agent Server and a responsive assistant-ui web interface.
+Retrieval is deterministic and runs to completion before any generation, so the
+passages and scores recorded in this report are exactly what the language model
+received. Generation is orchestrated by a LangChain Deep Agent whose only tools
+are exact numeric solvers.
 
-**Pipeline**
+**End-to-End System Diagram**
 
 ```
-PDF / text sources
-  -> heading-aware chunking (RecursiveCharacterTextSplitter, {900} chars, {150} overlap)
-  -> syllabus tagging (unit + topic, keyword scoring with a section-level prior)
-  -> dense embeddings ({EMBED_MODEL}, {meta['dim']}-d, cosine) + BM25 lexical index
-query
-  -> topic classification (LLM router + deterministic keyword router)
-  -> hybrid retrieval: dense top-{20} and BM25 top-{20} fused by reciprocal rank
-  -> syllabus topic filter or boost  -> top-{5} passages
-  -> diagram registry lookup by topic and keyword
-  -> out-of-scope gate on passage similarity
-  -> Deep Agent (tools: 9 numeric solvers) -> grounded answer with [chunk] citations
+┌────────────────────────────────────────────────────────────────────────┐
+│                   assistant-ui React Web Frontend                      │
+│             (Vite + TypeScript + Tailwind CSS @ localhost:5173)        │
+│                                                                        │
+│   • Streaming chat interface with step-by-step markdown rendering      │
+│   • Live Retrieval & Solver Telemetry side-panel                       │
+│   • Persistent Diagram & Schematic Asset Registry browser (21 assets)  │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ SSE / REST Stream
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│               Self-Deployed FastAPI Agent Server (server.py)           │
+│                      (Uvicorn @ localhost:8000)                        │
+│                                                                        │
+│   • POST /api/chat     -> Real-time Server-Sent Events (SSE) stream    │
+│   • POST /api/ask      -> Direct AnswerRecord payload & provenance     │
+│   • GET  /api/diagrams -> Static diagram asset metadata & image URLs   │
+│   • GET  /api/syllabus -> 5-unit syllabus topic and keyword hierarchy  │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                 Two-Step RAG Retrieval & Ingestion Pipeline            │
+│                                                                        │
+│   PDF / text sources                                                   │
+│     -> heading-aware chunking (RecursiveCharacterTextSplitter)         │
+│     -> syllabus tagging (unit + topic keyword scoring with priors)     │
+│     -> dense embeddings ({EMBED_MODEL}) + BM25 sparse index            │
+│   query                                                                │
+│     -> topic routing (LLM router + deterministic keyword classifier)   │
+│     -> hybrid retrieval: dense top-20 + BM25 top-20 fused via RRF      │
+│     -> topic priority ranking & adaptive context windowing             │
+│     -> diagram registry lookup by concept & keyword                    │
+│     -> out-of-scope similarity gate -> Deep Agent (+ 9 Solvers)        │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Indexing strategy.** {len(chunks)} chunks total, {answerable} of them answerable.
@@ -125,20 +150,27 @@ rather than explanations.
 **Chunking boundaries.** Splits follow the headings of the study material, including
 unnumbered sub-headings such as "Minimum Spanning Tree (MST)", because a DAA section
 is a self-contained explanation. Sections longer than the window are split with
-RecursiveCharacterTextSplitter. Every chunk carries its unit, topic, source, and
-section heading.
+RecursiveCharacterTextSplitter (900 chars, 150 overlap). Every chunk carries its
+unit, topic, source, and section heading.
 
-**Retrieval model.** Dense retrieval uses {EMBED_MODEL} with the recommended query
-instruction prefix; lexical retrieval uses BM25 over the same answerable chunks.
-The two rankings are combined with reciprocal rank fusion (k=60). The predicted
-syllabus topic is then applied as a hard filter when the router is confident and
-at least three chunks match, otherwise as a score boost. This topic step is what
-resolves cross-topic keyword collisions.
+**Retrieval model.** Dense retrieval uses {EMBED_MODEL} with offline cached weights;
+lexical retrieval uses BM25 over the same answerable chunks. The two rankings are
+combined with reciprocal rank fusion (k=60). The predicted syllabus topic is then
+applied via topic priority ranking with adaptive context sizing (on-topic chunks
+lead, topped up to a minimum of 3 chunks only when necessary).
 
-**Prompt design.** The system prompt forbids ungrounded claims, requires inline
-`[C0042]` citations, forbids self-computed arithmetic, requires the exact diagram
-identifier in the form `[Diagram: DIAG_...]`, and requires the final asymptotic
-bound in exact notation. Retrieved passages are labelled as data, never instructions.
+**Prompt design & Solvers.** The system prompt forbids ungrounded claims, requires
+inline `[C0042]` citations, forbids self-computed arithmetic, requires the exact
+diagram identifier in the form `[Diagram: DIAG_...]`, and requires the final
+asymptotic bound in exact notation. Nine deterministic Python solvers handle
+arithmetic (Master Theorem, recursion tree, 0/1 knapsack, fractional knapsack, LCS,
+matrix chain multiplication, Floyd-Warshall, Dijkstra, Bellman-Ford).
+
+**Agent Server & assistant-ui Frontend.** A dev-based FastAPI agent server
+(`server.py`) exposes streaming Server-Sent Events (`/api/chat`) and serves
+static diagram assets. The frontend is built with `@assistant-ui/react`, providing
+a clean monochrome interface, real-time retrieval telemetry, and a visual diagram
+browser.
 
 **Syllabus coverage.** {n_topics} topics across the 5 units of AKTU KCS-503. The
 supplied notes omit several prescribed topics (LCS detail, Floyd-Warshall,
