@@ -1,0 +1,36 @@
+What is the difference between Big-O, Big-Omega, and Big-Theta notations?
+State the formal definitions of asymptotic notations with constants c and n0.
+Solve the recurrence relation T(n) = 2T(n/2) + n using Master Theorem.
+Solve the recurrence T(n) = 3T(n/4) + n log n using the Master Theorem.
+Solve the recurrence T(n) = 2T(n/2) + n^2 using the recursion tree method and determine the total cost at each level.
+Explain Merge Sort algorithm and analyze its best, average, and worst-case time complexity.
+Explain Quick Sort and derive its worst-case recurrence relation.
+How does Randomized Quick Sort prevent the O(n^2) worst-case time complexity?
+Explain Counting Sort algorithm and prove why its running time is O(n + k).
+Explain Radix Sort and show how it sorts multi-digit numbers using Counting Sort as an intermediate stable sort.
+What are the properties of a Red-Black Tree? Why is the height bounded by 2 log(n + 1)?
+Explain left and right rotations in an AVL Tree with neat diagrams.
+What is a B-Tree of order m? Explain node splitting during insertion in a B-Tree.
+Explain Binomial Heaps, binomial trees, and how the Union operation works in O(log n) time.
+Compare the amortized time complexities of Binomial Heap vs Fibonacci Heap operations.
+Explain Disjoint Set data structure and how Union by Rank and Path Compression achieve near-linear time complexity.
+What is a Skip List and how does randomized search work with O(log n) expected time complexity?
+Explain the Trie data structure and its operations for prefix-based searching.
+Solve the Fractional Knapsack problem for weights [10, 20, 30] and values [60, 100, 120] with capacity W = 50 using Greedy approach.
+Explain Huffman Coding algorithm and construct the optimal prefix tree for characters with frequencies: a:45, b:13, c:12, d:16, e:9, f:5.
+Explain Kruskal's algorithm for finding Minimum Spanning Tree and trace it on a connected weighted graph.
+Explain Prim's algorithm for Minimum Spanning Tree and compare its time complexity with Kruskal's algorithm.
+Find the optimal 0/1 Knapsack value for capacity W = 5 with item weights [2, 3, 4, 5] and values [3, 4, 5, 6]. Show the complete dynamic programming table.
+Compute the Longest Common Subsequence (LCS) for sequences X = "ABCBDAB" and Y = "BDCABA" and construct the dynamic programming cost and direction table.
+Solve Matrix Chain Multiplication for matrices with dimensions <10, 20, 30, 40, 30> and find the optimal parenthesization.
+Explain Floyd-Warshall algorithm for all-pairs shortest paths and compute the D^(k) distance matrices for a 4-vertex graph.
+Trace Dijkstra's shortest path algorithm from a single source vertex on a directed weighted graph with non-negative edge weights.
+Explain Bellman-Ford shortest path algorithm and how it detects negative weight cycles in a graph.
+Explain the 8-Queens problem using Backtracking and show the state space tree representation.
+Explain the Branch and Bound method for solving the Traveling Salesperson Problem (TSP) using cost matrix reduction.
+Explain the Knuth-Morris-Pratt (KMP) string matching algorithm and compute the prefix failure function (pi table) for pattern "ABABAC".
+Explain the Rabin-Karp string matching algorithm and how rolling hash functions are computed.
+Explain the Fast Fourier Transform (FFT) algorithm for polynomial multiplication in O(n log n) time using divide and conquer.
+Define Complexity Classes P, NP, NP-Complete, and NP-Hard.
+State and explain Cook's Theorem and prove why 3-SAT is NP-Complete.
+Explain Vertex Cover problem and show why the 2-approximation greedy heuristic gives a valid approximation bound.
