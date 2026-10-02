@@ -24,10 +24,20 @@ def load_env() -> None:
     from dotenv import load_dotenv
 
     load_dotenv(ROOT / ".env")
+    # LangSmith / LangChain Tracing configuration
+    tracing_enabled = os.environ.get("LANGCHAIN_TRACING_V2", "").lower() in ("true", "1", "yes")
+    api_key = os.environ.get("LANGCHAIN_API_KEY")
+    if tracing_enabled or api_key:
+        os.environ.setdefault("LANGCHAIN_TRACING_V2", "true")
+        os.environ.setdefault("LANGCHAIN_PROJECT", os.environ.get("LANGCHAIN_PROJECT", "rag-aktu"))
+        os.environ.setdefault("LANGCHAIN_ENDPOINT", os.environ.get("LANGCHAIN_ENDPOINT", "https://api.smith.langchain.com"))
+
+
+# Ensure environment is loaded on module import
+load_env()
 
 
 def setting(name: str) -> str | None:
-    load_env()
     return os.environ.get(name) or DEFAULTS.get(name)
 
 
