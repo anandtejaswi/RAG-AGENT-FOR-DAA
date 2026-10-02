@@ -14,9 +14,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 DEFAULTS = {
-    "MUNSHI_MODEL_PROVIDER": "openai_compat",
-    "MUNSHI_MODEL": "z-ai/glm-5.3-flash",
-    "MUNSHI_MODEL_BASE_URL": "https://openrouter.ai/api/v1",
+    "LLM_PROVIDER": "openai_compat",
+    "LLM_MODEL": "z-ai/glm-5.3-flash",
+    "LLM_BASE_URL": "https://openrouter.ai/api/v1",
 }
 
 
@@ -38,7 +38,12 @@ load_env()
 
 
 def setting(name: str) -> str | None:
-    return os.environ.get(name) or DEFAULTS.get(name)
+    # Map clean name with legacy fallback if needed
+    val = os.environ.get(name)
+    if not val and name.startswith("LLM_"):
+        legacy = "MUNSHI_" + name[4:]
+        val = os.environ.get(legacy)
+    return val or DEFAULTS.get(name)
 
 
 @lru_cache(maxsize=8)
@@ -52,9 +57,9 @@ def chat_model(temperature: float = 0.0, max_tokens: int = 4096,
     (the query router, the grading judge) pass "low" to keep the budget for the
     JSON they need. The endpoint for GLM refuses to disable reasoning outright.
     """
-    provider = setting("MUNSHI_MODEL_PROVIDER")
-    model = setting("MUNSHI_MODEL")
-    api_key = setting("MUNSHI_MODEL_API_KEY")
+    provider = setting("LLM_PROVIDER")
+    model = setting("LLM_MODEL")
+    api_key = setting("LLM_API_KEY") or os.environ.get("OPENAI_API_KEY")
 
     if provider == "google_genai":
         from langchain_google_genai import ChatGoogleGenerativeAI
@@ -70,7 +75,7 @@ def chat_model(temperature: float = 0.0, max_tokens: int = 4096,
         from langchain_openai import ChatOpenAI
 
         if not api_key:
-            raise RuntimeError("MUNSHI_MODEL_API_KEY is not set; add it to .env")
+            raise RuntimeError("LLM_API_KEY is not set; add it to .env")
         extra: dict = {}
         if reasoning_effort:
             extra["reasoning"] = {"effort": reasoning_effort}
@@ -79,14 +84,14 @@ def chat_model(temperature: float = 0.0, max_tokens: int = 4096,
             temperature=temperature,
             max_tokens=max_tokens,
             api_key=api_key,
-            base_url=setting("MUNSHI_MODEL_BASE_URL"),
+            base_url=setting("LLM_BASE_URL"),
             timeout=180,
             max_retries=3,
             extra_body=extra or None,
         )
 
-    raise ValueError(f"unsupported MUNSHI_MODEL_PROVIDER: {provider!r}")
+    raise ValueError(f"unsupported LLM_PROVIDER: {provider!r}")
 
 
 def model_label() -> str:
-    return f"{setting('MUNSHI_MODEL')} via {setting('MUNSHI_MODEL_PROVIDER')}"
+    return f"{setting('LLM_MODEL')} via {setting('LLM_PROVIDER')}"

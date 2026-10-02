@@ -39,14 +39,20 @@ report do.
 `.env` at the project root:
 
 ```
-MUNSHI_MODEL_PROVIDER=openai_compat
-MUNSHI_MODEL=z-ai/glm-5.3-flash
-MUNSHI_MODEL_BASE_URL=https://openrouter.ai/api/v1
-MUNSHI_MODEL_API_KEY=<your key>
+LLM_PROVIDER=openai_compat
+LLM_MODEL=z-ai/glm-5.3-flash
+LLM_BASE_URL=https://openrouter.ai/api/v1
+LLM_API_KEY=<your key>
+
+# LangSmith / LangChain Tracing (Optional)
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_API_KEY=<your langsmith key>
+LANGCHAIN_PROJECT=rag-aktu
+LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
 ```
 
-To use Gemini instead, set `MUNSHI_MODEL_PROVIDER=google_genai`,
-`MUNSHI_MODEL=gemini-2.5-flash` and put the key in `MUNSHI_MODEL_API_KEY`. No
+To use Gemini instead, set `LLM_PROVIDER=google_genai`,
+`LLM_MODEL=gemini-2.5-flash` and put the key in `LLM_API_KEY` (or `GOOGLE_API_KEY`). No
 code changes are needed. Embeddings are always the local open-source
 `BAAI/bge-base-en-v1.5`, which runs on CPU and needs no key.
 
