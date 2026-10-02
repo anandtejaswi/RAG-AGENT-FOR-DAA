@@ -9,8 +9,8 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background-color: #0f172a;
-  color: #f8fafc;
+  background-color: #09090b;
+  color: #fafafa;
 }
 
 #root {
@@ -18,18 +18,18 @@ body {
   min-height: 100vh;
 }
 
-/* Custom scrollbar */
+/* Minimal scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 9999px;
+  background: #27272a;
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #3f3f46;
 }

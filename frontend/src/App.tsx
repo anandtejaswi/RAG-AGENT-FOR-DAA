@@ -23,7 +23,7 @@ export const App: React.FC = () => {
         if (healthRes.ok) {
           const data = await healthRes.json();
           setServerOnline(true);
-          setModelLabel(data.model || 'Agent Server Online');
+          setModelLabel(data.model || 'Online');
         } else {
           setServerOnline(false);
         }
@@ -51,7 +51,7 @@ export const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 antialiased font-sans">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-zinc-950 text-zinc-100 antialiased font-sans">
       <Navbar
         serverOnline={serverOnline}
         modelLabel={modelLabel}
@@ -60,7 +60,7 @@ export const App: React.FC = () => {
       />
 
       <div className="flex-1 flex overflow-hidden relative">
-        {/* Main Assistant Chat View */}
+        {/* Chat Area */}
         <main className="flex-1 h-full overflow-hidden flex flex-col">
           <AssistantChat
             onMetadataChange={(meta) => setActiveMetadata(meta)}
@@ -68,23 +68,21 @@ export const App: React.FC = () => {
           />
         </main>
 
-        {/* Toggle Inspector Button */}
+        {/* Toggle Sidebar */}
         <button
           onClick={() => setIsInspectorOpen(!isInspectorOpen)}
-          className="absolute right-3 top-3 z-30 p-1.5 rounded-lg bg-slate-800/90 border border-slate-700 text-slate-400 hover:text-slate-100 hover:bg-slate-700 shadow-md transition-colors"
-          title={isInspectorOpen ? 'Hide Telemetry Panel' : 'Show Telemetry Panel'}
+          className="absolute right-3 top-3 z-30 p-1.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-100 transition-colors cursor-pointer"
+          title={isInspectorOpen ? 'Hide Telemetry' : 'Show Telemetry'}
         >
           {isInspectorOpen ? <SidebarClose className="h-4 w-4" /> : <SidebarOpen className="h-4 w-4" />}
         </button>
 
-        {/* Right Sidebar: Retrieval & Solver Inspector */}
+        {/* Telemetry Sidebar */}
         {isInspectorOpen && (
-          <aside className="w-80 lg:w-96 border-l border-slate-800 bg-slate-900/95 flex flex-col h-full shrink-0 shadow-2xl animate-in slide-in-from-right duration-200">
-            <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-300">Retrieval & Solvers</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                Live Audit
-              </span>
+          <aside className="w-72 lg:w-84 border-l border-zinc-800 bg-zinc-900 flex flex-col h-full shrink-0">
+            <div className="px-4 py-2.5 border-b border-zinc-800 flex items-center justify-between text-xs font-mono">
+              <span className="font-semibold text-zinc-300">Telemetry</span>
+              <span className="text-[10px] text-zinc-500">Live</span>
             </div>
             <div className="flex-1 overflow-y-auto">
               <RetrievalInspector metadata={activeMetadata} />
@@ -93,7 +91,7 @@ export const App: React.FC = () => {
         )}
       </div>
 
-      {/* Diagrams Gallery Modal */}
+      {/* Diagrams Modal */}
       <DiagramGallery
         isOpen={isDiagramsOpen}
         onClose={() => setIsDiagramsOpen(false)}
